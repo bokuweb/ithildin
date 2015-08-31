@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>DemoApp</title>
+    <meta name="description" content="">
+    <meta name="keywords" content=""/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="animate.css">
+    <link rel="stylesheet" href="../node_modules/material-design-lite/material.min.css">
+    <script src="../node_modules/material-design-lite/material.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.pink-red.min.css" />
+    <link rel="stylesheet" href="../app/assets/font-awesome/css/font-awesome.css">
+
+    <style>
+     html { font-size: 100%;
+	     -webkit-text-size-adjust: 100%;
+         -ms-text-size-adjust: 100%; }
+     html, html a { -webkit-font-smoothing: antialiased; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004); }
+     html,body {
+         height: 100%;
+     }
+     #timeline {
+         padding : 0 0 0 1rem;
+         height: calc(100% - 60px);
+     }
+     #timeline > div.mdl-grid {
+         height: calc(100% - 60px);
+     }
+     .avatar {
+         border-radius:5px;
+     }
+     p.text {
+         color:#7F8C8D;
+         font-size:14px;
+     }
+     span.name {
+         font-size:14px;
+         color:#34495E;
+         font-weight:bold;
+         }
+     span.screen-name {
+         padding:0 0 0 10px;
+         color:#999;
+         font-size:12px;
+     }
+     div.item {
+         margin : 0 0 10px 0;
+         padding : 0;
+     }
+     .mdl-textfield {
+         width:94%;
+         margin: 5px 0 0 10px;
+     }
+     textarea.mdl-textfield__input {
+         width:100%;
+         resize:none;
+         color:#7F8C8D;
+     }
+     label.mdl-textfield__label {
+         color:#7F8C8D;
+     }
+     span.time {
+         color:#2C3E50;
+         font-size:11px;
+         padding: 0 0 0 10px;
+     }
+     div.tweet-button-wrapper {
+         position:relative;
+         margin:-20px 0 10px;
+         }
+     button.tweet-button {
+         font-size:12px;
+         position:absolute;
+         top:10px;
+         left:100%;
+         margin: -5px 0 0 -135px;
+     }
+     span.tweet-length {
+         font-size:14px;
+         position:absolute;
+         top:10px;
+         left:100%;
+         margin: 0 0 0 -175px;
+     }
+     i.material-icons {
+         margin: 0 5px 0 0;
+     }
+     #profile {
+        padding:30px 0 0 10px;
+     }
+     span.profile-screen-name {
+         color:#44596E;
+         font-size:13px;
+         padding: 0 0 0 5px;
+     }
+     span.profile-name  {
+         color:#54697E;
+         font-size:13px;
+         padding: 0 0 0 5px;
+         font-weight:bold;
+     }
+
+     .timeline-wrapper{
+         overflow-y:auto;
+         height:calc(100% - 80px);
+         max-height:calc(100% - 80px);
+         margin:20px 0 0 0;
+     }
+     .timeline-wrapper::-webkit-scrollbar {
+         width : 0.5em;
+         height : 0.5em;
+         }
+
+     .timeline-wrapper::-webkit-scrollbar-thumb {
+         background : #D35400;
+         }
+
+     .timeline-wrapper::-webkit-scrollbar-track {
+         background : #b7bfc7;
+         }
+
+     .timeline-wrapper{
+         scrollbar-face-color : #D35400;
+         scrollbar-track-color :#b7bfc7;
+     }
+
+     img#logo {
+         width:120px;
+         height:auto;
+         margin: 45px 0 0 50px;
+         }
+     i.fa-twitter {
+         margin: 0 5px 0 0;
+         }
+
+     i.fa-reply, i.fa-retweet, i.fa-star {
+         margin: 0 20px 0 0;
+         color:#54697E;
+         font-size:13px;
+         cursor:pointer;
+         -webkit-transition: all 0.3s ease;
+         -moz-transition: all 0.3s ease;
+         -o-transition: all 0.3s ease;
+         -ms-transition: all 0.3s ease;
+         transition: all 0.3s ease;           
+     }
+
+     i.fa-reply:hover, i.fa-retweet:hover, i.fa-star:hover {
+         color:#D35400;
+         -webkit-transition: all 0.3s ease;
+         -moz-transition: all 0.3s ease;
+         -o-transition: all 0.3s ease;
+         -ms-transition: all 0.3s ease;
+         transition: all 0.3s ease;         
+     }
+
+     i.on {
+         color:#D35400;
+         }
+
+     p.text {
+         margin:0 0 5px;
+         }
+    </style>
+</head>
+<body>
+    <div class="mdl-layout__container">
+        <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header has-drawer is-upgraded" data-upgraded=",MaterialLayout">
+            <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+                <header class="demo-drawer-header">
+                    <img src="../app/assets/img/ithildin-logo.png" id="logo">
+                    <div id="profile"></div>
+                </header>
+            </div>
+            <main id="timeline" class="mdl-layout__content mdl-color--grey-100">
+
+            </main>
+        </div>
+    </div>
+    <script src="../app/js/timeline.js"></script>
+    <script src="../app/js/profile.js"></script>
+</body>
+</html>
