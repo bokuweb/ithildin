@@ -1,11 +1,11 @@
 # ithildin
 
-Twitter Client built on Electron.
-This repository is heavily under development and unstable.
+Twitter Client built on Electron.   
+This repository is heavily under development and unstable.   
 
 ![](/screenshot/screenshot.gif)
 
-## Usage
+## Development
 
 ### set your consumerkey & sectret to ```config/default.json```.
 
@@ -16,13 +16,13 @@ This repository is heavily under development and unstable.
 }
 ```
 
-### install node modules.
+### Install Node modules.
 
 ```
 npm i
 ```
 
-### start app.
+### Start app.
 
 ```
 npm start
