@@ -11,8 +11,8 @@ This repository is heavily under development and unstable.
 
 ``` json
 {
-      'consumerKey'    : YOUR_CONSUMERKEY,
-      'consumerSecret' : YOUR_CONSUMERSECRET
+      "consumerKey"    : "YOUR_CONSUMERKEY",
+      "consumerSecret" : "YOUR_CONSUMERSECRET"
 }
 ```
 
