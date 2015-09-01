@@ -1,13 +1,15 @@
-# ithildin
-
+# ![](/app/assets/img/ithildin-logo.png)
+   
 Twitter Client built on Electron.   
 This repository is heavily under development and unstable.   
-
+   
 ![](/screenshot/screenshot.gif)
 
 ## Development
+   
+### Set your consumerkey & sectret
 
-### set your consumerkey & sectret to ```config/default.json```.
+Set your consumerkey & sectret to ```config/default.json```.
 
 ``` json
 {
