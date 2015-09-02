@@ -4,7 +4,8 @@ config     = require 'config'
 Twitter    = require 'twitter'
 util       = require 'util'
 _          = require 'lodash'
-velocity   = require 'velocity-animate'
+PubSub     = require 'pubsub-js'
+#velocity   = require 'velocity-animate'
 
 class TimelineItem
   constructor : (data) ->
@@ -15,7 +16,7 @@ class TimelineItem
     @createdAt = m.prop data.created_at
     @id = m.prop data.id_str
     @urls = m.prop data.entities.urls
-    @isFavorited = m.prop false
+    @isFavorited = m.prop data.favorited
 
 class TimelineViewModel
   constructor : ->
@@ -25,6 +26,15 @@ class TimelineViewModel
       consumer_secret: config.consumerSecret
       access_token_key: token.accessToken
       access_token_secret: token.accessTokenSecret
+    PubSub.subscribe "menu.home.onclick", =>
+      @items = m.prop []
+      m.redraw()
+      @getItems()
+
+    PubSub.subscribe "menu.favorite.onclick", =>
+      @items = m.prop []
+      m.redraw()
+      @getFavItems()
 
   init : ->
     @items = m.prop []
@@ -44,6 +54,20 @@ class TimelineViewModel
       , 65000
       m.redraw()
 
+  # TODO : refactor
+  getFavItems : =>
+    @client.get 'favorites/list', {}, (error, tweets, response) =>
+      ids = for item in @items() then item.id() 
+      items = []
+      for tweet in tweets when not _.includes(ids, tweet.id_str)
+        items.push new TimelineItem tweet 
+      clearTimeout @timerid if @timerid?
+      @items = m.prop items.concat @items()
+      #@timerid = setTimeout =>
+      #  @getFavItems()
+      #, 65000
+      m.redraw()
+
   tweet : =>
     @client.post 'statuses/update', {status: @tweetText()}, (error, tweet, response) =>
       if error then console.log util.inspect(error)
@@ -51,14 +75,13 @@ class TimelineViewModel
         items = []
         items.push new TimelineItem tweet
         @items = m.prop items.concat @items()
-
         m.redraw()
     @tweetText ""
 
   createFavorite : (item) ->
     console.log "id = #{item.id()}"
-    item.isFavorited not item.isFavorited()
-    if item.isFavorited 
+    item.isFavorited = m.prop(not item.isFavorited())
+    if item.isFavorited()
       @client.post 'favorites/create', {id: item.id()}, (error) => console.log util.inspect(error)
     else
       @client.post 'favorites/destroy', {id: item.id()}, (error) => console.log util.inspect(error)
@@ -80,26 +103,27 @@ class Timeline
       controller : => @vm.init()
       view : @view
 
+
+
   view : =>
     openExternal = (href) ->
       shell = require 'shell'
       shell.openExternal href
 
     decorateText = (text) ->
-      strs =  text.split /(https?:\/\/\S+|\#\S+)/
+      strs =  text.split /(https?:\/\/\S+|\s\#\S+)/
       for str in strs
         if str.match(/https?:\/\/\S+/)
           m "a[href='#']", { onclick : openExternal.bind this, str}, str
-        else if  str.indexOf("#") isnt -1
+        else if  str.match(/^\#/)
           m "a[href='#']", { onclick : openExternal.bind this, str}, str
-        else m "span", str
-
+        else m "span", unescape(str)
+    ###
     fadesIn = (el, hasInitialized, ctx) ->
       unless hasInitialized
         el.style.opacity = 0
-        velocity el, {opacity : 1}
-        console.log "hoge"
-
+        velocity el, {opacity : 1}, {duration: 1500}
+    ###
     m "div.mdl-grid",  [
       m "div.mdl-cell.mdl-cell--12-col", [
         m "div.mdl-textfield.mdl-js-textfield", {config : @_upgradeMdl }, [
@@ -119,7 +143,7 @@ class Timeline
       ]
       m "div.timeline-wrapper", [
         m "div.timeline", @vm.items().map (item) =>
-          m "div.mdl-grid.item", {config : fadesIn, duration: 2000}, [
+          m "div.mdl-grid.item.animated.fadeInUp", [
             m "div.mdl-cell.mdl-cell--1-col", [
               m "img.avatar", {src:item.profileImage()}
             ]
@@ -132,6 +156,7 @@ class Timeline
                   decorateText item.text()
                 else item.text()
               m "i.fa.fa-reply"
+              console.log item.isFavorited() 
               m "i.fa.fa-star",
                 class : if item.isFavorited() then "on" else ""
                 onclick : @vm.createFavorite.bind @vm, item

@@ -26,6 +26,7 @@
     "material-design-lite": "~1.0.4-2",
     "mithril": "~0.2.0",
     "node-twitter-api": "~1.6.0",
+    "pubsub-js": "^1.5.2",
     "q": "~1.4.1",
     "twitter": "^1.2.5",
     "velocity-animate": "^1.2.2"
