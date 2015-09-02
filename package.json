@@ -22,10 +22,13 @@
     "config": "~1.15.0",
     "electron-compile": "^0.8.3",
     "jsonfile": "~2.2.1",
+    "lodash": "^3.10.1",
     "material-design-lite": "~1.0.4-2",
     "mithril": "~0.2.0",
     "node-twitter-api": "~1.6.0",
+    "pubsub-js": "^1.5.2",
     "q": "~1.4.1",
-    "twitter": "^1.2.5"
+    "twitter": "^1.2.5",
+    "velocity-animate": "^1.2.2"
   }
 }
