@@ -3,6 +3,8 @@ jsonfile   = require 'jsonfile'
 config     = require 'config'
 Twitter    = require 'twitter'
 util       = require 'util'
+_          = require 'lodash'
+velocity   = require 'velocity-animate'
 
 class TimelineItem
   constructor : (data) ->
@@ -30,26 +32,26 @@ class TimelineViewModel
     @tweetText = m.prop ""
 
   getItems : =>
-    @client.get 'statuses/home_timeline', {count:200}, (error, tweets, response) =>
+    @client.get 'statuses/home_timeline', {}, (error, tweets, response) =>
+      ids = for item in @items() then item.id() 
       items = []
-      items.push new TimelineItem tweet for tweet in tweets
-      @items = m.prop items.concat @items()
+      for tweet in tweets when not _.includes(ids, tweet.id_str)
+        items.push new TimelineItem tweet 
       clearTimeout @timerid if @timerid?
-      console.log "update"
+      @items = m.prop items.concat @items()
       @timerid = setTimeout =>
         @getItems()
-      , 90000
+      , 65000
       m.redraw()
 
   tweet : =>
     @client.post 'statuses/update', {status: @tweetText()}, (error, tweet, response) =>
       if error then console.log util.inspect(error)
       else
-        console.log tweet.text
         items = []
         items.push new TimelineItem tweet
         @items = m.prop items.concat @items()
-        console.log @items().length
+
         m.redraw()
     @tweetText ""
 
@@ -66,10 +68,10 @@ class TimelineViewModel
     diffTime_day = parseInt(diffTime_sec / (60 * 60 * 24))
     diffTime_hour = parseInt(diffTime_sec / (60 * 60))
     diffTime_minuite  = parseInt(diffTime_sec / 60)
-    if diffTime_day then "#{diffTime_day}日前"
-    else if diffTime_hour then "#{diffTime_hour}時間前"
-    else if diffTime_minuite then "#{diffTime_minuite}分前"
-    else "#{diffTime_sec}秒前"
+    if diffTime_day then "#{diffTime_day}d"
+    else if diffTime_hour then "#{diffTime_hour}h"
+    else if diffTime_minuite then "#{diffTime_minuite}m"
+    else "#{diffTime_sec}s"
 
 class Timeline
   constructor : (el) ->
@@ -79,18 +81,24 @@ class Timeline
       view : @view
 
   view : =>
-
     openExternal = (href) ->
       shell = require 'shell'
-      console.log "str" + href
       shell.openExternal href
 
     decorateText = (text) ->
-      strs =  text.split /(https?:\/\/\S+)/
+      strs =  text.split /(https?:\/\/\S+|\#\S+)/
       for str in strs
-        if str.indexOf("http") isnt -1
+        if str.match(/https?:\/\/\S+/)
+          m "a[href='#']", { onclick : openExternal.bind this, str}, str
+        else if  str.indexOf("#") isnt -1
           m "a[href='#']", { onclick : openExternal.bind this, str}, str
         else m "span", str
+
+    fadesIn = (el, hasInitialized, ctx) ->
+      unless hasInitialized
+        el.style.opacity = 0
+        velocity el, {opacity : 1}
+        console.log "hoge"
 
     m "div.mdl-grid",  [
       m "div.mdl-cell.mdl-cell--12-col", [
@@ -98,7 +106,7 @@ class Timeline
           m "textarea.mdl-textfield__input[type='text'][rows=4]",
             oninput : m.withAttr "value", @vm.tweetText
             value : @vm.tweetText()
-          m "label.mdl-textfield__label", "いまどうしてる？"
+          m "label.mdl-textfield__label", "What's happening?"
         ]
         m "div.mdl-grid.tweet-button-wrapper", [
           m "span.tweet-length", 140 - @vm.tweetText().length
@@ -106,12 +114,12 @@ class Timeline
              onclick : @vm.tweet
             }, [
             m "i.fa.fa-twitter"
-          ], "ツイート"
+          ], "tweet"
         ]
       ]
       m "div.timeline-wrapper", [
         m "div.timeline", @vm.items().map (item) =>
-          m "div.mdl-grid.item.animated.fadeInDown", [
+          m "div.mdl-grid.item", {config : fadesIn, duration: 2000}, [
             m "div.mdl-cell.mdl-cell--1-col", [
               m "img.avatar", {src:item.profileImage()}
             ]
