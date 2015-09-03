@@ -3,6 +3,8 @@ TwitterApi    = require 'node-twitter-api'
 config        = require 'config'
 Q             = require 'q'
 
+loginWindow = null
+
 class Auth
   constructor : ->
     @twitter = new TwitterApi
@@ -32,6 +34,7 @@ class Auth
             if error then d.reject error
             else
               loginWindow.close()
+              loginWindow = null
               d.resolve
                 accessToken : accessToken
                 accessTokenSecret : accessTokenSecret
