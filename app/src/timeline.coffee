@@ -44,10 +44,10 @@ class TimelineViewModel
 
   getItems : =>
     @client.get 'statuses/home_timeline', {}, (error, tweets, response) =>
-      ids = for item in @items() then item.id() 
+      ids = for item in @items() then item.id()
       items = []
       for tweet in tweets when not _.includes(ids, tweet.id_str)
-        items.push new TimelineItem tweet 
+        items.push new TimelineItem tweet
       clearTimeout @timerid if @timerid?
       @items = m.prop items.concat @items()
       @timerid = setTimeout =>
@@ -58,10 +58,10 @@ class TimelineViewModel
   # TODO : refactor
   getFavItems : =>
     @client.get 'favorites/list', {}, (error, tweets, response) =>
-      ids = for item in @items() then item.id() 
+      ids = for item in @items() then item.id()
       items = []
       for tweet in tweets when not _.includes(ids, tweet.id_str)
-        items.push new TimelineItem tweet 
+        items.push new TimelineItem tweet
       clearTimeout @timerid if @timerid?
       @items = m.prop items.concat @items()
       #@timerid = setTimeout =>
@@ -99,6 +99,7 @@ class TimelineViewModel
 
 class Timeline
   constructor : (el) ->
+    ipc.send 'authenticate-request', "hoge"
     @vm = new TimelineViewModel()
     m.mount document.getElementById(el),
       controller : => @vm.init()

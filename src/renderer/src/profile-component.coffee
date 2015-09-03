@@ -2,7 +2,6 @@ m = require 'mithril'
 
 class ProfileComponent
   constructor : (@_args = {}) ->
-    #@_vm = new ProfileViewModel()
     return {
       view : @_view
     }

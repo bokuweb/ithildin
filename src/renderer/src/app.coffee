@@ -9,8 +9,6 @@ new Timeline "timeline"
 
 # FIXME : temp
 token = jsonfile.readFileSync 'access_token.json'
-console.log token.accessTokenSecret
-console.log config.consumerKey
 
 @_twitter = new Twitter
   consumer_key: config.consumerKey

@@ -15,7 +15,6 @@ class Auth
   request : ->
     d = Q.defer()
     @twitter.getRequestToken (error, requestToken, requestTokenSecret) =>
-      console.log  requestToken
       if error
         console.log error
         d.reject error
@@ -23,8 +22,8 @@ class Auth
 
       url = @twitter.getAuthUrl requestToken
       loginWindow = new BrowserWindow
-        width: 800
-        height: 600
+        width  : 800
+        height : 600
 
       loginWindow.webContents.on 'will-navigate', (event, url) =>
         event.preventDefault()
