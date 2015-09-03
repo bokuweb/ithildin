@@ -13,7 +13,7 @@ app.on 'ready', ->
       width: 1200
       height: 800
     mainWindow.on 'closed', -> mainWindow = null
-    mainWindow.loadUrl "file://#{require('path').resolve()}/view/index.html"
+    mainWindow.loadUrl "file://#{require('path').resolve()}/src/renderer/index.html"
 
   tokenFile = 'access_token.json'
   try

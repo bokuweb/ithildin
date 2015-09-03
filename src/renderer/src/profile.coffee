@@ -30,6 +30,7 @@ class ProfileViewModel
 
 class Profile
   constructor : (el) ->
+    new Menu "menu"
     @_vm = new ProfileViewModel()
     m.mount document.getElementById(el),
       controller : => @_vm.init()
@@ -81,5 +82,5 @@ class Menu
       },[m "i.fa.fa-search"], "Search"
     ]
 
-new Profile "profile"
-new Menu "menu"
+module.exports = Profile
+

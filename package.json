@@ -1,13 +1,13 @@
 {
-  "name": "hoshizuki",
+  "name": "ithildin",
   "version": "0.1.0",
   "description": "",
-  "main": "app/js/main.js",
+  "main": "src/browser/js/main.js",
   "scripts": {
     "start": "electron ."
   },
-  "author": "",
-  "license": "BSD-2-Clause",
+  "author": "Bokuweb",
+  "license": "MIT",
   "devDependencies": {
     "electron-prebuilt": "^0.25.1",
     "electron-packager": "^5.0.2",

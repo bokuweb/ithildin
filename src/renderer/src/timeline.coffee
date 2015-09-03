@@ -5,6 +5,7 @@ Twitter    = require 'twitter'
 util       = require 'util'
 _          = require 'lodash'
 PubSub     = require 'pubsub-js'
+Shell      = require 'shell'
 #velocity   = require 'velocity-animate'
 
 class TimelineItem
@@ -103,12 +104,8 @@ class Timeline
       controller : => @vm.init()
       view : @view
 
-
-
   view : =>
-    openExternal = (href) ->
-      shell = require 'shell'
-      shell.openExternal href
+    openExternal = (href) -> Shell.openExternal href
 
     decorateText = (text) ->
       strs =  text.split /(https?:\/\/\S+|\s\#\S+)/
@@ -118,13 +115,9 @@ class Timeline
         else if  str.match(/^\#/)
           m "a[href='#']", { onclick : openExternal.bind this, str}, str
         else m "span", unescape(str)
-    ###
-    fadesIn = (el, hasInitialized, ctx) ->
-      unless hasInitialized
-        el.style.opacity = 0
-        velocity el, {opacity : 1}, {duration: 1500}
-    ###
+
     m "div.mdl-grid",  [
+      m "div.mdl-layout__drawer-button", [m "i.material-icons", "menu"]
       m "div.mdl-cell.mdl-cell--12-col", [
         m "div.mdl-textfield.mdl-js-textfield", {config : @_upgradeMdl }, [
           m "textarea.mdl-textfield__input[type='text'][rows=4]",
@@ -150,13 +143,12 @@ class Timeline
             m "div.mdl-cell.mdl-cell--10-col", [
               m "span.name", item.name()
               m "span.screen-name", "@#{item.screenName()}"
-              m "span.time", @vm.covertToRelativeTime item.createdAt()
+              #m "span.time", @vm.covertToRelativeTime item.createdAt()
+              m "span.time", item.createdAt()
               m "p.text",
-                if item.urls()?
-                  decorateText item.text()
+                if item.urls()? then decorateText item.text()
                 else item.text()
               m "i.fa.fa-reply"
-              console.log item.isFavorited() 
               m "i.fa.fa-star",
                 class : if item.isFavorited() then "on" else ""
                 onclick : @vm.createFavorite.bind @vm, item
@@ -169,5 +161,5 @@ class Timeline
   _upgradeMdl : (el, isInit, ctx) =>
     componentHandler.upgradeDom() unless isInit
 
-new Timeline "timeline"
+module.exports = Timeline
 
