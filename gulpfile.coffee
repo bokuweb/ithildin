@@ -14,16 +14,19 @@ gulp.task 'build:browser', ->
     .pipe plumber()
     .pipe coffee()
     .pipe gulp.dest './src/browser/js/'
-    
-gulp.task 'build:coffee', ['build:renderer', 'build:browser']
+
 gulp.task 'build:stylus', ->
-  gulp.src 'public/styl/*.styl'
+  gulp.src './src/renderer/styl/*.styl'
     .pipe plumber()
     .pipe stylus
       compress: true
-    .pipe gulp.dest 'public/css'
+    .pipe gulp.dest './src/renderer/stylesheets'
+
+gulp.task 'build:coffee', ['build:renderer', 'build:browser']
+
+gulp.task 'build', ['build:coffee', 'build:stylus']
 
 gulp.task 'watch', ->
-  gulp.watch ['public/styl/*.styl'], ['build:stylus']
+  gulp.watch ['./src/renderer/styl/*.styl'], ['build:stylus']
   gulp.watch ['./src/*/src/*.coffee'], ['build:coffee']
 

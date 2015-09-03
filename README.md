@@ -25,6 +25,13 @@ Set your consumerkey & sectret to ```config/default.json```.
 npm i
 ```
 
+### Build.
+
+```
+gulp build
+```
+
+
 ### Start app.
 
 ```
