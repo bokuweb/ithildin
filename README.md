@@ -1,4 +1,4 @@
-# ![](/app/assets/img/ithildin-logo.png)
+# ![](/src/renderer/img/ithildin-logo.png)
    
 Twitter Client built on Electron.   
 This repository is heavily under development and unstable.   
