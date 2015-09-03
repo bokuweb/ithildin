@@ -9,6 +9,7 @@ Shell      = require 'shell'
 ipc        = require 'ipc'
 #velocity   = require 'velocity-animate'
 
+
 class TimelineItem
   constructor : (data) ->
     @text = m.prop data.text
@@ -146,7 +147,7 @@ class Timeline
               m "span.name", item.name()
               m "span.screen-name", "@#{item.screenName()}"
               #m "span.time", @vm.covertToRelativeTime item.createdAt()
-              m "span.time", item.createdAt()
+              m "span.time", new Date item.createdAt()
               m "p.text",
                 if item.urls()? then decorateText item.text()
                 else item.text()

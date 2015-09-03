@@ -18,7 +18,6 @@ class Auth
       if error
         console.log error
         d.reject error
-        return
 
       url = @twitter.getAuthUrl requestToken
       loginWindow = new BrowserWindow
@@ -32,8 +31,11 @@ class Auth
           @twitter.getAccessToken requestToken, requestTokenSecret, matched[2], (error, accessToken, accessTokenSecret) =>
             if error then d.reject error
             else
-              loginWindow.close()
-              loginWindow = null
+              event.preventDefault()
+              setTimeout ->
+                loginWindow.close()
+                loginWindow = null
+              , 0
               d.resolve
                 accessToken : accessToken
                 accessTokenSecret : accessTokenSecret
