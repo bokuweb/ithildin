@@ -10,9 +10,10 @@ app.on 'window-all-closed', -> app.quit()
 
 app.on 'ready', ->
   loadMainWindow = ->
-    mainWindow = new BrowserWindow
+    mainWindow = new BrowserWindow 
       width: 1200
       height: 800
+
     mainWindow.on 'closed', -> mainWindow = null
     mainWindow.loadUrl "file://#{require('path').resolve()}/src/renderer/index.html"
 
@@ -23,10 +24,11 @@ app.on 'ready', ->
         jsonfile.writeFile tokenFile, res,  (err) ->
           loadMainWindow()
       .fail (error) -> authenticate()
-        
+
+
 
   ipc.on 'authenticate-request', (event, arg) =>
-    authenticate()
+    #authenticate()
 
   tokenFile = 'access_token.json'
   try
