@@ -6,6 +6,7 @@ util       = require 'util'
 _          = require 'lodash'
 PubSub     = require 'pubsub-js'
 Shell      = require 'shell'
+ipc        = require 'ipc'
 #velocity   = require 'velocity-animate'
 
 class TimelineItem
@@ -44,10 +45,10 @@ class TimelineViewModel
 
   getItems : =>
     @client.get 'statuses/home_timeline', {}, (error, tweets, response) =>
-      ids = for item in @items() then item.id()
+      ids = for item in @items() then item.id() 
       items = []
       for tweet in tweets when not _.includes(ids, tweet.id_str)
-        items.push new TimelineItem tweet
+        items.push new TimelineItem tweet 
       clearTimeout @timerid if @timerid?
       @items = m.prop items.concat @items()
       @timerid = setTimeout =>
@@ -58,10 +59,10 @@ class TimelineViewModel
   # TODO : refactor
   getFavItems : =>
     @client.get 'favorites/list', {}, (error, tweets, response) =>
-      ids = for item in @items() then item.id()
+      ids = for item in @items() then item.id() 
       items = []
       for tweet in tweets when not _.includes(ids, tweet.id_str)
-        items.push new TimelineItem tweet
+        items.push new TimelineItem tweet 
       clearTimeout @timerid if @timerid?
       @items = m.prop items.concat @items()
       #@timerid = setTimeout =>
@@ -145,7 +146,7 @@ class Timeline
               m "span.name", item.name()
               m "span.screen-name", "@#{item.screenName()}"
               #m "span.time", @vm.covertToRelativeTime item.createdAt()
-              m "span.time", new Date(item.createdAt())
+              m "span.time", item.createdAt()
               m "p.text",
                 if item.urls()? then decorateText item.text()
                 else item.text()
