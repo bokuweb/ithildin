@@ -44,7 +44,8 @@ class Auth
                   profile.accessTokenSecret = accessTokenSecret
                   d.resolve profile
 
-      loginWindow.loadUrl url
+      loginWindow.webContents.session.clearStorageData {}, =>
+        loginWindow.loadUrl url
     d.promise
 
 

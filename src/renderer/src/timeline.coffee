@@ -6,7 +6,7 @@ util       = require 'util'
 _          = require 'lodash'
 PubSub     = require 'pubsub-js'
 Shell      = require 'shell'
-ipc        = require 'ipc'
+
 #velocity   = require 'velocity-animate'
 
 
@@ -101,7 +101,7 @@ class TimelineViewModel
 
 class Timeline
   constructor : (el) ->
-    ipc.send 'authenticate-request', "hoge"
+
     @vm = new TimelineViewModel()
     m.mount document.getElementById(el),
       controller : => @vm.init()

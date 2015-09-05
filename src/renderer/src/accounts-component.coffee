@@ -1,6 +1,7 @@
-m = require 'mithril'
+m      = require 'mithril'
+PubSub = require 'pubsub-js'
 
-class ProfileComponent
+class AccountsComponent
   constructor : (@_args = {}) ->
     return {
       view : @_view
@@ -16,9 +17,12 @@ class ProfileComponent
         m "br"
         m "span.profile-screen-name", @_args.screenName()
       ]
+      m "div.mdl-cell.mdl-cell--12-col", [
+        m "i.fa.fa-plus-square.add-account", {
+          onclick: => PubSub.publish "accounts.addButton.onclick"
+        }
+      ]
     ]
 
-
-
-module.exports = ProfileComponent
+module.exports = AccountsComponent
 

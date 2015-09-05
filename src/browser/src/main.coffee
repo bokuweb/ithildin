@@ -4,6 +4,7 @@ jsonfile      = require 'jsonfile'
 ipc           = require 'ipc'
 _             = require 'lodash'
 Auth          = require './auth'
+Q             = require 'q'
 
 mainWindow = null
 
@@ -25,20 +26,22 @@ app.on 'ready', ->
     accounts = jsonfile.readFileSync accountFile
 
   authenticate = ->
+    d = Q.defer()
     auth = new Auth()
     auth.request()
-      .then (account) ->
-        accounts.push account unless  _.includes(_.map(accounts, 'id'), account.id) 
-        jsonfile.writeFile accountFile, accounts,  (err) -> loadMainWindow()
+      .then d.resolve
       .fail (error) -> authenticate()
+    d.promise
 
   ipc.on 'authenticate-request', (event, arg) =>
-    #authenticate()
+    authenticate().then ->
 
   if accounts[0]?.accessToken? and accounts[0]?.accessTokenSecret?
     loadMainWindow()
   else
-    authenticate()
+    authenticate().then (account) ->
+      accounts.push account unless  _.includes(_.map(accounts, 'id'), account.id) 
+      jsonfile.writeFile accountFile, accounts,  (err) -> loadMainWindow()
 
 
 
