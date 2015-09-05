@@ -23,10 +23,20 @@ body
    border-radius 5px
 
 img.avatar-mini
+   border solid 1px #34495E
    border-radius 5px
    width 30px
    height auto
+   cursor pointer
 
+img.avatar-mini:hover
+   border solid 1px #E74C3C
+   -webkit-transition all 0.3s ease
+   -moz-transition all 0.3s ease
+   -o-transition all 0.3s ease
+   -ms-transition all 0.3s ease
+   transition all 0.3s ease
+   
 .accounts
   margin-top 20px
   border-top solid 1px #34495E
@@ -190,7 +200,6 @@ a.menu-link
 a.active
   background #E74C3C
   color #fff
-
 
 .add-account
   color #E74C3C
