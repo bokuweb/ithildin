@@ -15,7 +15,7 @@ app.on 'ready', ->
     mainWindow = new BrowserWindow 
       width: 1200
       height: 800
-      'min-width': 638
+      'min-width': 840
 
     mainWindow.on 'closed', -> mainWindow = null
     mainWindow.loadUrl "file://#{require('path').resolve()}/src/renderer/index.html"

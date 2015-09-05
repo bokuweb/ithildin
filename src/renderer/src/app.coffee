@@ -15,7 +15,7 @@ class IthildinRendererMain
 
     m.mount document.getElementById("side-menu"), m.component new SideMenu
       account :
-        accounts : m.prop accounts
+        accounts : accounts
         activeId : 0
 
 #      account :
