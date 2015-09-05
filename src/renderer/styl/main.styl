@@ -22,6 +22,26 @@ body
 .avatar
    border-radius 5px
 
+img.avatar-mini
+   border solid 1px #34495E
+   border-radius 5px
+   width 30px
+   height auto
+   cursor pointer
+
+img.avatar-mini:hover
+   border solid 1px #E74C3C
+   -webkit-transition all 0.3s ease
+   -moz-transition all 0.3s ease
+   -o-transition all 0.3s ease
+   -ms-transition all 0.3s ease
+   transition all 0.3s ease
+   
+.accounts
+  margin-top 20px
+  border-top solid 1px #34495E
+  width 100%
+  
 p.text
   color #7F8C8D
   font-size 14px
@@ -65,8 +85,8 @@ button.tweet-button
   font-size 12px
   position absolute
   top 10px
-  left 100%
-  margin  -5px 0 0 -135px
+  left calc(100% - 120px)
+  margin  -5px 0 0 0px
 
 span.tweet-length 
   font-size 14px
@@ -180,3 +200,17 @@ a.menu-link
 a.active
   background #E74C3C
   color #fff
+
+.add-account
+  color #E74C3C
+  cursor pointer
+  padding : 8px 0 0 12px
+
+@media (min-width: 600px) and  (max-width: 1023px)
+  .mdl-layout--fixed-drawer > .mdl-layout__drawer
+    -webkit-transform translateX(0)
+    -ms-transform translateX(0)
+    transform translateX(0)
+
+  #timeline
+    margin-left 240px

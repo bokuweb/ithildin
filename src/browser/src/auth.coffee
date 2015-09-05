@@ -2,6 +2,8 @@ BrowserWindow = require 'browser-window'
 TwitterApi    = require 'node-twitter-api'
 config        = require 'config'
 Q             = require 'q'
+util          = require 'util'
+
 
 loginWindow = null
 
@@ -31,16 +33,19 @@ class Auth
           @twitter.getAccessToken requestToken, requestTokenSecret, matched[2], (error, accessToken, accessTokenSecret) =>
             if error then d.reject error
             else
-              event.preventDefault()
-              setTimeout ->
-                loginWindow.close()
-                loginWindow = null
-              , 0
-              d.resolve
-                accessToken : accessToken
-                accessTokenSecret : accessTokenSecret
+              @twitter.verifyCredentials accessToken, accessTokenSecret, (error, profile, response) =>
+                if error then d.reject error
+                else
+                  setTimeout ->
+                    loginWindow.close()
+                    loginWindow = null
+                  , 0
+                  profile.accessToken = accessToken
+                  profile.accessTokenSecret = accessTokenSecret
+                  d.resolve profile
 
-      loginWindow.loadUrl url
+      loginWindow.webContents.session.clearStorageData {}, =>
+        loginWindow.loadUrl url
     d.promise
 
 

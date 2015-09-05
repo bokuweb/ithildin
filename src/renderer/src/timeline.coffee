@@ -6,7 +6,7 @@ util       = require 'util'
 _          = require 'lodash'
 PubSub     = require 'pubsub-js'
 Shell      = require 'shell'
-ipc        = require 'ipc'
+
 #velocity   = require 'velocity-animate'
 
 
@@ -23,12 +23,12 @@ class TimelineItem
 
 class TimelineViewModel
   constructor : ->
-    token = jsonfile.readFileSync 'access_token.json'
+    accounts = jsonfile.readFileSync 'accounts.json'
     @client = new Twitter
       consumer_key: config.consumerKey
       consumer_secret: config.consumerSecret
-      access_token_key: token.accessToken
-      access_token_secret: token.accessTokenSecret
+      access_token_key: accounts[0].accessToken
+      access_token_secret: accounts[0].accessTokenSecret
     PubSub.subscribe "menu.home.onclick", =>
       @items = m.prop []
       m.redraw()
@@ -101,7 +101,7 @@ class TimelineViewModel
 
 class Timeline
   constructor : (el) ->
-    ipc.send 'authenticate-request', "hoge"
+
     @vm = new TimelineViewModel()
     m.mount document.getElementById(el),
       controller : => @vm.init()
