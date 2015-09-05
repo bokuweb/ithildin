@@ -2,8 +2,8 @@ app           = require 'app'
 BrowserWindow = require 'browser-window'
 jsonfile      = require 'jsonfile'
 ipc           = require 'ipc'
+_             = require 'lodash'
 Auth          = require './auth'
-
 
 mainWindow = null
 
@@ -19,24 +19,26 @@ app.on 'ready', ->
     mainWindow.on 'closed', -> mainWindow = null
     mainWindow.loadUrl "file://#{require('path').resolve()}/src/renderer/index.html"
 
+  accountFile = 'accounts.json'
+  accounts = []
+  try
+    accounts = jsonfile.readFileSync accountFile
+
   authenticate = ->
     auth = new Auth()
     auth.request()
-      .then (res) ->
-        jsonfile.writeFile tokenFile, res,  (err) ->
-          loadMainWindow()
+      .then (account) ->
+        accounts.push account unless  _.includes(_.map(accounts, 'id'), account.id) 
+        jsonfile.writeFile accountFile, accounts,  (err) -> loadMainWindow()
       .fail (error) -> authenticate()
 
   ipc.on 'authenticate-request', (event, arg) =>
     #authenticate()
 
-  tokenFile = 'access_token.json'
-  try
-    token = jsonfile.readFileSync tokenFile
-
-  if token?.accessToken? and token?.accessTokenSecret?
+  if accounts[0]?.accessToken? and accounts[0]?.accessTokenSecret?
     loadMainWindow()
   else
     authenticate()
+
 
 
