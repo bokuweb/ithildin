@@ -2,7 +2,7 @@ BrowserWindow = require 'browser-window'
 TwitterApi    = require 'node-twitter-api'
 config        = require 'config'
 Q             = require 'q'
-
+util       = require 'util'
 loginWindow = null
 
 class Auth
@@ -31,7 +31,6 @@ class Auth
           @twitter.getAccessToken requestToken, requestTokenSecret, matched[2], (error, accessToken, accessTokenSecret) =>
             if error then d.reject error
             else
-              event.preventDefault()
               setTimeout ->
                 loginWindow.close()
                 loginWindow = null

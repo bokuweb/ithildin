@@ -4,6 +4,7 @@ jsonfile      = require 'jsonfile'
 ipc           = require 'ipc'
 Auth          = require './auth'
 
+
 mainWindow = null
 
 app.on 'window-all-closed', -> app.quit()
@@ -13,6 +14,7 @@ app.on 'ready', ->
     mainWindow = new BrowserWindow 
       width: 1200
       height: 800
+      #'min-width': 1100
 
     mainWindow.on 'closed', -> mainWindow = null
     mainWindow.loadUrl "file://#{require('path').resolve()}/src/renderer/index.html"
@@ -24,8 +26,6 @@ app.on 'ready', ->
         jsonfile.writeFile tokenFile, res,  (err) ->
           loadMainWindow()
       .fail (error) -> authenticate()
-
-
 
   ipc.on 'authenticate-request', (event, arg) =>
     #authenticate()
