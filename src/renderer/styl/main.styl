@@ -65,8 +65,8 @@ button.tweet-button
   font-size 12px
   position absolute
   top 10px
-  left 100%
-  margin  -5px 0 0 -135px
+  left calc(100% - 120px)
+  margin  -5px 0 0 0px
 
 span.tweet-length 
   font-size 14px
@@ -180,3 +180,13 @@ a.menu-link
 a.active
   background #E74C3C
   color #fff
+
+
+@media (min-width: 600px) and  (max-width: 1023px)
+  .mdl-layout--fixed-drawer > .mdl-layout__drawer
+    -webkit-transform translateX(0)
+    -ms-transform translateX(0)
+    transform translateX(0)
+
+  #timeline
+    margin-left 240px
