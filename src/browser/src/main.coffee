@@ -34,7 +34,10 @@ app.on 'ready', ->
     d.promise
 
   ipc.on 'authenticate-request', (event, arg) =>
-    authenticate().then ->
+    authenticate().then (account) ->
+      accounts.push account unless  _.includes(_.map(accounts, 'id'), account.id) 
+      jsonfile.writeFile accountFile, accounts,  (err) ->
+        event.sender.send 'authenticate-request-reply', accounts
 
   if accounts[0]?.accessToken? and accounts[0]?.accessTokenSecret?
     loadMainWindow()

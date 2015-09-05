@@ -15,9 +15,13 @@ class IthildinRendererMain
 
     m.mount document.getElementById("side-menu"), m.component new SideMenu
       account :
-        image : m.prop accounts[0].profile_image_url
-        name : m.prop accounts[0].name
-        screenName : m.prop accounts[0].screen_name
+        accounts : m.prop accounts
+        activeId : 0
+
+#      account :
+#        accounts : m.prop accounts[0].profile_image_url
+#        name : m.prop accounts[0].name
+#        screenName : m.prop accounts[0].screen_name
 
 
 new IthildinRendererMain()
