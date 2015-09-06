@@ -24,6 +24,7 @@
     "lodash": "^3.10.1",
     "material-design-lite": "~1.0.4-2",
     "mithril": "~0.2.0",
+    "moment": "^2.10.6",
     "node-twitter-api": "~1.6.0",
     "pubsub-js": "^1.5.2",
     "q": "~1.4.1",

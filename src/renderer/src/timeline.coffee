@@ -6,6 +6,7 @@ util       = require 'util'
 _          = require 'lodash'
 PubSub     = require 'pubsub-js'
 Shell      = require 'shell'
+moment     = require 'moment'
 
 #velocity   = require 'velocity-animate'
 
@@ -155,9 +156,9 @@ class Timeline
             ]
             m "div.mdl-cell.mdl-cell--10-col.tweet-body", [
               m "span.name", item.tweet().user.name
-              m "span.screen-name", "@#{item.tweet().screen_name}"
+              m "span.screen-name", "@#{item.tweet().user.screen_name}"
               #m "span.time", @_vm.covertToRelativeTime item.createdAt()
-              m "span.time", new Date item.tweet().created_at
+              m "span.time", moment(new Date(item.tweet().created_at)).format('lll')
               m "p.text",
                 decorateText item.tweet().text
               if item.tweet().entities?.media?
