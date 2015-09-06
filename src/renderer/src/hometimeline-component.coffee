@@ -46,16 +46,18 @@ class TimelineViewModel
     console.log "init"
 
   getItems : =>
+    clearTimeout @timerid if @timerid?
+    @timerid = setTimeout =>
+      @getItems()
+    , 65000
+
     @client.get 'statuses/home_timeline', {}, (error, tweets, response) =>
+      return unless tweets?
       ids = for item in @items() then item.tweet().id_str
       items = []
       for tweet in tweets when not _.includes(ids, tweet.id_str)
-        items.push new TimelineItem tweet 
-      clearTimeout @timerid if @timerid?
+        items.push new TimelineItem tweet
       @items = m.prop items.concat @items()
-      @timerid = setTimeout =>
-        @getItems()
-      , 65000
       m.redraw()
 
   # TODO : refactor
