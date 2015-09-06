@@ -136,7 +136,7 @@ class Timeline
       for str in strs
         if str.match(/https?:\/\/\S+/)
           m "a[href='#']", { onclick : openExternal.bind this, str}, str
-        else if str.match(/^\#/)
+        else if str.match(/^\#|^\s\#/)
           m "a[href='#']", { onclick : openExternal.bind this, str}, str
         else m "span", htmlDecode(str)
 
