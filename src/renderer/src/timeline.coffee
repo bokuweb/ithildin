@@ -9,17 +9,8 @@ Shell      = require 'shell'
 
 #velocity   = require 'velocity-animate'
 
-
 class TimelineItem
-  constructor : (data) ->
-    @text = m.prop data.text
-    @profileImage = m.prop data.user.profile_image_url
-    @name = m.prop data.user.name
-    @screenName = m.prop data.user.screen_name
-    @createdAt = m.prop data.created_at
-    @id = m.prop data.id_str
-    @urls = m.prop data.entities.urls
-    @isFavorited = m.prop data.favorited
+  constructor : (tweet) -> @tweet = m.prop tweet
 
 class TimelineViewModel
   constructor : ->
@@ -44,7 +35,6 @@ class TimelineViewModel
 
     #FIXME : refactor
     PubSub.subscribe "accounts.onchange", (msg, id) =>
-      console.log id
       @items = m.prop []
       accounts = jsonfile.readFileSync 'accounts.json'
       @client = new Twitter
@@ -62,7 +52,7 @@ class TimelineViewModel
 
   getItems : =>
     @client.get 'statuses/home_timeline', {}, (error, tweets, response) =>
-      ids = for item in @items() then item.id() 
+      ids = for item in @items() then item.tweet().id_str
       items = []
       for tweet in tweets when not _.includes(ids, tweet.id_str)
         items.push new TimelineItem tweet 
@@ -76,7 +66,7 @@ class TimelineViewModel
   # TODO : refactor
   getFavItems : =>
     @client.get 'favorites/list', {}, (error, tweets, response) =>
-      ids = for item in @items() then item.id() 
+      ids = for item in @items() then item.tweet().id_str
       items = []
       for tweet in tweets when not _.includes(ids, tweet.id_str)
         items.push new TimelineItem tweet 
@@ -98,12 +88,11 @@ class TimelineViewModel
     @tweetText ""
 
   createFavorite : (item) ->
-    console.log "id = #{item.id()}"
-    item.isFavorited = m.prop(not item.isFavorited())
-    if item.isFavorited()
-      @client.post 'favorites/create', {id: item.id()}, (error) => console.log util.inspect(error)
+    item.isFavorited = m.prop(not item.tweet().favorited)
+    if item.tweet().favorited
+      @client.post 'favorites/create', {id: item.tweet().id}, (error) => console.log util.inspect(error)
     else
-      @client.post 'favorites/destroy', {id: item.id()}, (error) => console.log util.inspect(error)
+      @client.post 'favorites/destroy', {id: item.tweet().id}, (error) => console.log util.inspect(error)
 
   covertToRelativeTime : (createdAt) ->
     diffTime_sec = parseInt (new Date() - new Date(createdAt)) / 1000
@@ -118,12 +107,12 @@ class TimelineViewModel
 class Timeline
   constructor : (el) ->
 
-    @vm = new TimelineViewModel()
+    @_vm = new TimelineViewModel()
     m.mount document.getElementById(el),
-      controller : => @vm.init()
-      view : @view
+      controller : => @_vm.init()
+      view : @_view
 
-  view : =>
+  _view : =>
     openExternal = (href) -> Shell.openExternal href
 
     htmlDecode = (text) ->
@@ -145,36 +134,41 @@ class Timeline
       m "div.mdl-cell.mdl-cell--12-col", [
         m "div.mdl-textfield.mdl-js-textfield", {config : @_upgradeMdl }, [
           m "textarea.mdl-textfield__input[type='text'][rows=4]",
-            oninput : m.withAttr "value", @vm.tweetText
-            value : @vm.tweetText()
+            oninput : m.withAttr "value", @_vm.tweetText
+            value : @_vm.tweetText()
           m "label.mdl-textfield__label", "What's happening?"
         ]
         m "div.mdl-grid.tweet-button-wrapper", [
-          m "span.tweet-length", 140 - @vm.tweetText().length
+          m "span.tweet-length", 140 - @_vm.tweetText().length
           m "button.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.mdl-button--accent.tweet-button", {
-             onclick : @vm.tweet
+             onclick : @_vm.tweet
             }, [
             m "i.fa.fa-twitter"
           ], "tweet"
         ]
       ]
       m "div.timeline-wrapper", [
-        m "div.timeline", @vm.items().map (item) =>
+        m "div.timeline", @_vm.items().map (item) =>
           m "div.mdl-grid.item.animated.fadeInUp", [
             m "div.mdl-cell.mdl-cell--1-col", [
-              m "img.avatar", {src:item.profileImage()}
+              m "img.avatar", {src:item.tweet().user.profile_image_url}
             ]
             m "div.mdl-cell.mdl-cell--10-col.tweet-body", [
-              m "span.name", item.name()
-              m "span.screen-name", "@#{item.screenName()}"
-              #m "span.time", @vm.covertToRelativeTime item.createdAt()
-              m "span.time", new Date item.createdAt()
+              m "span.name", item.tweet().user.name
+              m "span.screen-name", "@#{item.tweet().screen_name}"
+              #m "span.time", @_vm.covertToRelativeTime item.createdAt()
+              m "span.time", new Date item.tweet().created_at
               m "p.text",
-                decorateText item.text()
+                decorateText item.tweet().text
+              if item.tweet().entities?.media?
+                m "div.image-wraper", [
+                  m "img.media", {src:item.tweet().entities.media[0].media_url}
+                ]
+              
               m "i.fa.fa-reply"
               m "i.fa.fa-star",
-                class : if item.isFavorited() then "on" else ""
-                onclick : @vm.createFavorite.bind @vm, item
+                class : if item.tweet().favorited then "on" else ""
+                onclick : @_vm.createFavorite.bind @_vm, item
               m "i.fa.fa-retweet"
             ]
           ]
