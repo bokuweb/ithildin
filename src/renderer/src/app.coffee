@@ -1,6 +1,6 @@
 m               = require 'mithril'
 jsonfile        = require 'jsonfile'
-Timeline        = require './js/timeline'
+HomeTimeline    = require './js/hometimeline-component'
 Search          = require './js/search'
 Favorite        = require './js/favorite'
 SideMenu        = require './js/sidemenu-component'
@@ -12,12 +12,12 @@ class IthildinRendererMain
   constructor : ->
     m.route.mode = "hash"
     # FIXME
-    timeline = new Timeline()
+    homeTimeline = new HomeTimeline()
     search =  new Search()
     favorite =  new Favorite()
     
     m.route document.getElementById("timeline"), "/", {
-      "/"       : timeline
+      "/"       : homeTimeline
       "/favorite" : favorite
       "/search" : search
     }
