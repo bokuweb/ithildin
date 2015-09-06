@@ -3,7 +3,10 @@ Menulist   = require './menulist-component'
 Accounts   = require './accounts-component'
 
 class SideMenuComponent
-  constructor : (@_args) ->
+  constructor : (args) ->
+    @_accountsComponent = new Accounts args.account
+    @_menuListComponent = new Menulist()
+
     return {
       view : @_view
     }
@@ -12,10 +15,10 @@ class SideMenuComponent
     m "header.demo-drawer-header", [
       m "img#logo", {src:"./img/ithildin-logo.png"}
       m "div#profile", [
-        m.component new Accounts(@_args.account)
+        m.component @_accountsComponent
       ]
       m "div#menu", [
-        m.component new Menulist()
+        m.component @_menuListComponent
       ]
     ]
 

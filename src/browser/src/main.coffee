@@ -35,6 +35,7 @@ app.on 'ready', ->
 
   ipc.on 'authenticate-request', (event, arg) =>
     authenticate().then (account) ->
+      account._id = accounts.length
       accounts.push account unless  _.includes(_.map(accounts, 'id'), account.id) 
       jsonfile.writeFile accountFile, accounts,  (err) ->
         event.sender.send 'authenticate-request-reply', accounts
@@ -43,6 +44,7 @@ app.on 'ready', ->
     loadMainWindow()
   else
     authenticate().then (account) ->
+      account._id = accounts.length 
       accounts.push account unless  _.includes(_.map(accounts, 'id'), account.id) 
       jsonfile.writeFile accountFile, accounts,  (err) -> loadMainWindow()
 
