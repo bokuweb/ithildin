@@ -101,7 +101,7 @@ class TimelineViewModel
       # TODO
       @client.post 'statuses/destroy', {id: item.tweet().retweetedId}, (error) => console.log util.inspect(error)
       
-class Timeline
+class HomeTimeline
   constructor : ->
     @_vm = new TimelineViewModel()
     return {
@@ -121,5 +121,5 @@ class Timeline
         createRetweet  : @_vm.createRetweet
     ]
 
-module.exports = Timeline
+module.exports = HomeTimeline
 
