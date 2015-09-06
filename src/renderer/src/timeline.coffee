@@ -126,14 +126,19 @@ class Timeline
   view : =>
     openExternal = (href) -> Shell.openExternal href
 
+    htmlDecode = (text) ->
+      e = document.createElement 'div'
+      e.innerHTML = text
+      if e.childNodes.length is 0 then "" else e.childNodes[0].nodeValue
+
     decorateText = (text) ->
       strs =  text.split /(https?:\/\/\S+|\s\#\S+)/
       for str in strs
         if str.match(/https?:\/\/\S+/)
           m "a[href='#']", { onclick : openExternal.bind this, str}, str
-        else if  str.match(/^\#/)
+        else if str.match(/^\#/)
           m "a[href='#']", { onclick : openExternal.bind this, str}, str
-        else m "span", unescape(str)
+        else m "span", htmlDecode(str)
 
     m "div.mdl-grid",  [
       m "div.mdl-layout__drawer-button", [m "i.material-icons", "menu"]
@@ -165,8 +170,7 @@ class Timeline
               #m "span.time", @vm.covertToRelativeTime item.createdAt()
               m "span.time", new Date item.createdAt()
               m "p.text",
-                if item.urls()? then decorateText item.text()
-                else item.text()
+                decorateText item.text()
               m "i.fa.fa-reply"
               m "i.fa.fa-star",
                 class : if item.isFavorited() then "on" else ""
