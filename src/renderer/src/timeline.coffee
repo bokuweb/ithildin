@@ -22,18 +22,15 @@ class TimelineViewModel
       access_token_key: accounts[0].accessToken
       access_token_secret: accounts[0].accessTokenSecret
 
-    #FIXME : refactor
-    PubSub.subscribe "menu.home.onclick", =>
-      @items = m.prop []
-      m.redraw()
-      @getItems()
+    @items = m.prop []
+    @getItems()
 
     #FIXME : refactor
-    PubSub.subscribe "menu.favorite.onclick", =>
-      @items = m.prop []
-      m.redraw()
-      @getFavItems()
-
+    #PubSub.subscribe "menu.favorite.onclick", =>
+    #  @items = m.prop []
+    #  m.redraw()
+    #  @getFavItems()
+    # 
     #FIXME : refactor
     PubSub.subscribe "accounts.onchange", (msg, id) =>
       @items = m.prop []
@@ -45,9 +42,6 @@ class TimelineViewModel
         access_token_secret: accounts[id].accessTokenSecret
       m.redraw()
       @getItems()
-
-    @items = m.prop []
-    @getItems()
 
   init : ->
     @tweetText = m.prop ""
@@ -133,7 +127,6 @@ class Timeline
             m "div.mdl-cell.mdl-cell--10-col.tweet-body", [
               m "span.name", item.tweet().user.name
               m "span.screen-name", "@#{item.tweet().user.screen_name}"
-              #m "span.time", @_vm.covertToRelativeTime item.createdAt()
               m "span.time", moment(new Date(item.tweet().created_at)).format('lll')
               m "p.text",
                 decorateText item.tweet().text
@@ -150,9 +143,6 @@ class Timeline
           ]
       ]
     ]
-
-  _upgradeMdl : (el, isInit, ctx) =>
-    componentHandler.upgradeDom() unless isInit
 
 module.exports = Timeline
 
