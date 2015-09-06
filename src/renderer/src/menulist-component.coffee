@@ -24,11 +24,11 @@ class MenuListComponent
           active = m.prop "link"
           PubSub.publish "menu.favorite.onclick"
       }, [m "i.fa.fa-star"], "Favorite"
-      m "a.[href='#'].menu-link", {
+      m "a.[href='#/search'].menu-link", {
         class : if active() is "search" then "active" else ""
-        onclick: =>
-          active = m.prop "search"
-          PubSub.publish "menu.search.onclick"
+        #onclick: =>
+          #active = m.prop "search"
+          #PubSub.publish "menu.search.onclick"
       },[m "i.fa.fa-search"], "Search"
     ]
 
