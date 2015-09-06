@@ -10,7 +10,7 @@ class IthildinRendererMain
   constructor : ->
     new Timeline "timeline"
     # FIXME : temp
-    new AccountsManager()
+    #new AccountsManager()
     accounts = jsonfile.readFileSync 'accounts.json'
 
     m.mount document.getElementById("side-menu"), m.component new SideMenu

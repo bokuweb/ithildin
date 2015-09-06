@@ -29,15 +29,31 @@ class TimelineViewModel
       consumer_secret: config.consumerSecret
       access_token_key: accounts[0].accessToken
       access_token_secret: accounts[0].accessTokenSecret
+
+    #FIXME : refactor
     PubSub.subscribe "menu.home.onclick", =>
       @items = m.prop []
       m.redraw()
       @getItems()
 
+    #FIXME : refactor
     PubSub.subscribe "menu.favorite.onclick", =>
       @items = m.prop []
       m.redraw()
       @getFavItems()
+
+    #FIXME : refactor
+    PubSub.subscribe "accounts.onchange", (msg, id) =>
+      console.log id
+      @items = m.prop []
+      accounts = jsonfile.readFileSync 'accounts.json'
+      @client = new Twitter
+        consumer_key: config.consumerKey
+        consumer_secret: config.consumerSecret
+        access_token_key: accounts[id].accessToken
+        access_token_secret: accounts[id].accessTokenSecret
+      m.redraw()
+      @getItems()
 
   init : ->
     @items = m.prop []
@@ -143,7 +159,7 @@ class Timeline
             m "div.mdl-cell.mdl-cell--1-col", [
               m "img.avatar", {src:item.profileImage()}
             ]
-            m "div.mdl-cell.mdl-cell--10-col", [
+            m "div.mdl-cell.mdl-cell--10-col.tweet-body", [
               m "span.name", item.name()
               m "span.screen-name", "@#{item.screenName()}"
               #m "span.time", @vm.covertToRelativeTime item.createdAt()
