@@ -41,12 +41,12 @@ class AccountsComponent
       m "div.mdl-grid.accounts", [
         @_vm.accounts().map (account) =>
           unless  @_vm.accounts()[@_vm.activeId()].id is account.id
-            m "div.mdl-cell.mdl-cell--2-col", [
+            m "div.mdl-cell.mdl-cell--3-col", [
               m "a[href='#']", {onclick : @_vm.accountOnclick.bind @_vm, account._id}, [
                 m "img.avatar-mini", {src : account.profile_image_url}
               ]
             ]
-        m "div.mdl-cell.mdl-cell--2-col", [
+        m "div.mdl-cell.mdl-cell--3-col", [
           m "i.fa.fa-plus-square.add-account", {
             onclick : => PubSub.publish "accounts.addButton.onclick"
           }

@@ -45,7 +45,9 @@ class TimelineBodyComponent
             m "i.fa.fa-star",
               class : if item.tweet().favorited then "on" else ""
               onclick : @_args.createFavorite.bind this, item
-            m "i.fa.fa-retweet"
+            m "i.fa.fa-retweet",
+              class : if item.tweet().retweeted then "on" else ""
+              onclick : @_args.createRetweet.bind this, item
           ]
         ]
     ]

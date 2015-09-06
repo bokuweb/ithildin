@@ -5,7 +5,6 @@ Twitter      = require 'twitter'
 util         = require 'util'
 _            = require 'lodash'
 PubSub       = require 'pubsub-js'
-
 Tweetbox     = require './tweetbox-component'
 TimelineBody = require './timelinebody-component'
 
@@ -81,12 +80,27 @@ class TimelineViewModel
     @tweetText ""
 
   createFavorite : (item) =>
-    item.isFavorited = m.prop(not item.tweet().favorited)
+    item.tweet().favorited = not item.tweet().favorited
     if item.tweet().favorited
-      @client.post 'favorites/create', {id: item.tweet().id}, (error) => console.log util.inspect(error)
+      @client.post 'favorites/create', {id: item.tweet().id_str}, (error) => console.log util.inspect(error)
     else
-      @client.post 'favorites/destroy', {id: item.tweet().id}, (error) => console.log util.inspect(error)
+      @client.post 'favorites/destroy', {id: item.tweet().id_str}, (error) => console.log util.inspect(error)
 
+  createRetweet : (item) =>
+    item.tweet().retweeted = not item.tweet().retweeted
+    if item.tweet().retweeted
+      @client.post 'statuses/retweet', {id: item.tweet().id_str}, (error, tweet) =>
+        if error then console.log util.inspect(error)
+        else
+          newItem = item.tweet()
+          newItem.retweetedId = tweet.id_str
+          item.tweet newItem
+          console.log tweet.id_str
+    else
+      console.log "desroy"
+      # TODO
+      @client.post 'statuses/destroy', {id: item.tweet().retweetedId}, (error) => console.log util.inspect(error)
+      
 class Timeline
   constructor : ->
     @_vm = new TimelineViewModel()
@@ -104,6 +118,7 @@ class Timeline
       m.component new TimelineBody
         items          : @_vm.items
         createFavorite : @_vm.createFavorite
+        createRetweet  : @_vm.createRetweet
     ]
 
 module.exports = Timeline

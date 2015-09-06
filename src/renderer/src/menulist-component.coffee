@@ -8,7 +8,6 @@ class MenuListComponent
     }
 
   _view : (controller) =>
-    console.log m.route()
     m "nav.demo-navigation.mdl-navigation", [
       m "a.[href='#'].menu-link", {
         class : if m.route() is "/" then "active" else ""
@@ -18,7 +17,7 @@ class MenuListComponent
       }, [m "i.fa.fa-star"], "Favorite"
       m "a.[href='#/search'].menu-link", {
         class : if m.route() is "/search" then "active" else ""
-      },[m "i.fa.fa-search"], "Search"
+      }, [m "i.fa.fa-search"], "Search"
     ]
 
 module.exports = MenuListComponent
