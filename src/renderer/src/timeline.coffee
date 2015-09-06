@@ -7,8 +7,8 @@ _          = require 'lodash'
 PubSub     = require 'pubsub-js'
 Shell      = require 'shell'
 moment     = require 'moment'
+Tweetbox   = require './tweetbox-component'
 
-#velocity   = require 'velocity-animate'
 
 class TimelineItem
   constructor : (tweet) -> @tweet = m.prop tweet
@@ -46,10 +46,12 @@ class TimelineViewModel
       m.redraw()
       @getItems()
 
-  init : ->
     @items = m.prop []
     @getItems()
+
+  init : ->
     @tweetText = m.prop ""
+    console.log "init"
 
   getItems : =>
     @client.get 'statuses/home_timeline', {}, (error, tweets, response) =>
@@ -73,9 +75,6 @@ class TimelineViewModel
         items.push new TimelineItem tweet 
       clearTimeout @timerid if @timerid?
       @items = m.prop items.concat @items()
-      #@timerid = setTimeout =>
-      #  @getFavItems()
-      #, 65000
       m.redraw()
 
   tweet : =>
@@ -95,23 +94,13 @@ class TimelineViewModel
     else
       @client.post 'favorites/destroy', {id: item.tweet().id}, (error) => console.log util.inspect(error)
 
-  covertToRelativeTime : (createdAt) ->
-    diffTime_sec = parseInt (new Date() - new Date(createdAt)) / 1000
-    diffTime_day = parseInt(diffTime_sec / (60 * 60 * 24))
-    diffTime_hour = parseInt(diffTime_sec / (60 * 60))
-    diffTime_minuite  = parseInt(diffTime_sec / 60)
-    if diffTime_day then "#{diffTime_day}d"
-    else if diffTime_hour then "#{diffTime_hour}h"
-    else if diffTime_minuite then "#{diffTime_minuite}m"
-    else "#{diffTime_sec}s"
-
 class Timeline
-  constructor : (el) ->
-
+  constructor : ->
     @_vm = new TimelineViewModel()
-    m.mount document.getElementById(el),
+    return {
       controller : => @_vm.init()
       view : @_view
+    }
 
   _view : =>
     openExternal = (href) -> Shell.openExternal href
@@ -131,23 +120,10 @@ class Timeline
         else m "span", htmlDecode(str)
 
     m "div.mdl-grid",  [
-      m "div.mdl-layout__drawer-button", [m "i.material-icons", "menu"]
-      m "div.mdl-cell.mdl-cell--12-col", [
-        m "div.mdl-textfield.mdl-js-textfield", {config : @_upgradeMdl }, [
-          m "textarea.mdl-textfield__input[type='text'][rows=4]",
-            oninput : m.withAttr "value", @_vm.tweetText
-            value : @_vm.tweetText()
-          m "label.mdl-textfield__label", "What's happening?"
-        ]
-        m "div.mdl-grid.tweet-button-wrapper", [
-          m "span.tweet-length", 140 - @_vm.tweetText().length
-          m "button.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.mdl-button--accent.tweet-button", {
-             onclick : @_vm.tweet
-            }, [
-            m "i.fa.fa-twitter"
-          ], "tweet"
-        ]
-      ]
+      m.component new Tweetbox
+        tweetText : @_vm.tweetText
+        tweet     : @_vm.tweet
+
       m "div.timeline-wrapper", [
         m "div.timeline", @_vm.items().map (item) =>
           m "div.mdl-grid.item.animated.fadeInUp", [
@@ -165,7 +141,6 @@ class Timeline
                 m "div.image-wraper", [
                   m "img.media", {src:item.tweet().entities.media[0].media_url}
                 ]
-              
               m "i.fa.fa-reply"
               m "i.fa.fa-star",
                 class : if item.tweet().favorited then "on" else ""
