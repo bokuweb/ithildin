@@ -35,19 +35,20 @@ class TimelineBodyComponent
             m "span.name", item.tweet().user.name
             m "span.screen-name", "@#{item.tweet().user.screen_name}"
             m "span.time", moment(new Date(item.tweet().created_at)).format('lll')
-            m "p.text",
-            ctrl.decorateText item.tweet().text
+            m "p.text", ctrl.decorateText item.tweet().text
             if item.tweet().entities?.media?
               m "div.image-wraper", [
                 m "img.media", {src:item.tweet().entities.media[0].media_url}
               ]
             m "i.fa.fa-reply"
-            m "i.fa.fa-star",
+            m "i.fa.fa-star", {
               class : if item.tweet().favorited then "on" else ""
               onclick : @_args.createFavorite.bind this, item
-            m "i.fa.fa-retweet",
+            }
+            m "i.fa.fa-retweet", {
               class : if item.tweet().retweeted then "on" else ""
               onclick : @_args.createRetweet.bind this, item
+            }
           ]
         ]
     ]

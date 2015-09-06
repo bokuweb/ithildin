@@ -19,10 +19,8 @@ class TimelineViewModel
       consumer_secret: config.consumerSecret
       access_token_key: accounts[0].accessToken
       access_token_secret: accounts[0].accessTokenSecret
-
     @items = m.prop []
     @getItems()
-
     #FIXME : refactor
     #PubSub.subscribe "menu.favorite.onclick", =>
     #  @items = m.prop []
@@ -43,19 +41,20 @@ class TimelineViewModel
 
   init : ->
     @tweetText = m.prop ""
-    console.log "init"
 
   getItems : =>
-    @client.get 'statuses/home_timeline', {}, (error, tweets, response) =>
+    clearTimeout @timerid if @timerid?
+    @timerid = setTimeout =>
+      @getItems()
+    , 65000
+
+    @client.get 'statuses/home_timeline', {count:200}, (error, tweets, response) =>
+      return unless tweets?
       ids = for item in @items() then item.tweet().id_str
       items = []
       for tweet in tweets when not _.includes(ids, tweet.id_str)
-        items.push new TimelineItem tweet 
-      clearTimeout @timerid if @timerid?
+        items.push new TimelineItem tweet
       @items = m.prop items.concat @items()
-      @timerid = setTimeout =>
-        @getItems()
-      , 65000
       m.redraw()
 
   # TODO : refactor
