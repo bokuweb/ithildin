@@ -29,7 +29,7 @@ class AccountsComponent
     }
 
   _view : =>
-    m "div.mdl-grid.animated.fadeIn", [
+    m "div.mdl-grid", [
       m "div.mdl-cell.mdl-cell--3-col", [
         m "img.avatar", {src : @_vm.accounts()[@_vm.activeId()].profile_image_url}
       ]

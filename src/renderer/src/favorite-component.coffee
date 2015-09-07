@@ -20,7 +20,9 @@ class TimelineViewModel
       access_token_key: accounts[0].accessToken
       access_token_secret: accounts[0].accessTokenSecret
     @items = m.prop []
-    @getItems()
+    @getFavItems()
+
+    
     #FIXME : refactor
     #PubSub.subscribe "menu.favorite.onclick", =>
     #  @items = m.prop []
@@ -37,23 +39,24 @@ class TimelineViewModel
         access_token_key: accounts[id].accessToken
         access_token_secret: accounts[id].accessTokenSecret
       m.redraw()
-      @getItems()
+      @getFavItems()
 
   init : ->
     @tweetText = m.prop ""
 
-  getItems : =>
+  # TODO : refactor
+  getFavItems : =>
     clearTimeout @timerid if @timerid?
     @timerid = setTimeout =>
-      @getItems()
+      @getFavItems()
     , 65000
 
-    @client.get 'statuses/home_timeline', {count:200}, (error, tweets, response) =>
-      return unless tweets?
+    @client.get 'favorites/list', {}, (error, tweets, response) =>
       ids = for item in @items() then item.tweet().id_str
       items = []
       for tweet in tweets when not _.includes(ids, tweet.id_str)
-        items.push new TimelineItem tweet
+        items.push new TimelineItem tweet 
+
       @items = m.prop items.concat @items()
       m.redraw()
 
@@ -89,7 +92,7 @@ class TimelineViewModel
       # TODO
       @client.post 'statuses/destroy', {id: item.tweet().retweetedId}, (error) => console.log util.inspect(error)
       
-class HomeTimeline
+class FavoriteTimeline
   constructor : ->
     @_vm = new TimelineViewModel()
     return {
@@ -109,5 +112,5 @@ class HomeTimeline
         createRetweet  : @_vm.createRetweet
     ]
 
-module.exports = HomeTimeline
+module.exports = FavoriteTimeline
 
