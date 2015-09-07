@@ -22,12 +22,14 @@ class TweetBoxComponent
           m "label.mdl-textfield__label", "What's happening?"
         ]
         m "div.mdl-grid.tweet-button-wrapper", [
+          m.component @_args.searchBox if @_args.searchBox?
           m "span.tweet-length", 140 - @_args.tweetText().length
           m "button.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.mdl-button--accent.tweet-button", {
              onclick : @_args.tweet
             }, [
             m "i.fa.fa-twitter"
           ], "tweet"
+
         ]
       ]
     ]
