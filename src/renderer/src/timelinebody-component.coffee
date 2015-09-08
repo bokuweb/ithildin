@@ -3,9 +3,9 @@ moment = require 'moment'
 Shell  = require 'shell'
 
 class TimelineBodyComponent
-  constructor : (args) ->
+  constructor : (@_args) ->
     return {
-      controller : (args) ->
+      controller : ->
         _openExternal = (href) -> Shell.openExternal href
 
         _htmlDecode = (text) ->
@@ -18,15 +18,15 @@ class TimelineBodyComponent
           for str in strs
             if str.match(/https?:\/\/\S+/)
               m "a[href='#']", { onclick : _openExternal.bind this, str}, str
-            else if str.match(/^\#|^\s\#/)
+            else if str.match(/^\#\S+|^\s\#\S+/)
               m "a[href='#']", { onclick : _openExternal.bind this, str}, str
             else m "span", _htmlDecode(str)
       view : @_view
     }
 
-  _view : (ctrl, args) =>
+  _view : (ctrl) =>
     m "div.timeline-wrapper", [
-      m "div.timeline", args.items().map (item) =>
+      m "div.timeline", @_args.items().map (item) =>
         m "div.mdl-grid.item.animated.fadeInUp", [
           m "div.mdl-cell.mdl-cell--1-col", [
             m "img.avatar", {src:item.tweet().user.profile_image_url}
@@ -43,11 +43,11 @@ class TimelineBodyComponent
             m "i.fa.fa-reply"
             m "i.fa.fa-star", {
               class : if item.tweet().favorited then "on" else ""
-              onclick : args.onFavorite.bind this, item
+              onclick : @_args.onFavorite.bind this, item
             }
             m "i.fa.fa-retweet", {
               class : if item.tweet().retweeted then "on" else ""
-              onclick : args.onRetweet.bind this, item
+              onclick : @_args.onRetweet.bind this, item
             }
           ]
         ]

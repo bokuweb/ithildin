@@ -2,9 +2,9 @@ m         = require 'mithril'
 SearchBox = require './searchbox-component'
 
 class TweetBoxComponent
-  constructor : (args) ->
+  constructor : (@_args) ->
     return {
-      controller : (args) ->
+      controller : ->
         return {
           _upgradeMdl : (el, isInit, ctx) =>
             componentHandler.upgradeDom() unless isInit
@@ -12,19 +12,19 @@ class TweetBoxComponent
       view : @_view
     }
 
-  _view : (ctrl, args) =>
+  _view : (ctrl)  =>
       m "div.mdl-cell.mdl-cell--12-col", [
         m "div.mdl-textfield.mdl-js-textfield", {config : ctrl._upgradeMdl }, [
           m "textarea.mdl-textfield__input[type='text'][rows=4]",
-            oninput : m.withAttr "value", args.tweetText
-            value : args.tweetText()
+            oninput : m.withAttr "value", @_args.tweetText
+            value : @_args.tweetText()
           m "label.mdl-textfield__label", "What's happening?"
         ]
         m "div.mdl-grid.tweet-button-wrapper", [
           m.component new SearchBox()
-          m "span.tweet-length", 140 - args.tweetText().length
+          m "span.tweet-length", 140 - @_args.tweetText().length
           m "button.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.mdl-button--accent.tweet-button", {
-             onclick : args.onTweet
+             onclick : @_args.onTweet
             }, [
             m "i.fa.fa-twitter"
           ], "tweet"

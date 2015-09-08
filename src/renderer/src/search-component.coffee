@@ -2,28 +2,24 @@ m            = require 'mithril'
 Tweetbox     = require './tweetbox-component'
 TimelineBody = require './timelinebody-component'
 
-
-
-
 class SearchComponent
-  constructor : (vm, id) ->
+  constructor : (@_vm, @_id) ->
     return {
-      controller : (vm, id) -> vm.init()
+      controller : =>
       view : @_view
     }
 
-  _view : (ctrl, vm, id) =>
+  _view : =>
     m "div.mdl-grid",  [
       m.component new Tweetbox
-        tweetText : vm[id].tweetText
-        onTweet   : vm[id].onTweet
+        tweetText : @_vm[@_id()].tweetText
+        onTweet   : @_vm[@_id()].onTweet
 
       m.component new TimelineBody
-        items      : vm[id].items.search
-        onFavorite : vm[id].onFavorite
-        onRetweet  : vm[id].onRetweet
+        items      : @_vm[@_id()].items.search
+        onFavorite : @_vm[@_id()].onFavorite
+        onRetweet  : @_vm[@_id()].onRetweet
     ]
-
 
 module.exports = SearchComponent
 
