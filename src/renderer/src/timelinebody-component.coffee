@@ -18,7 +18,7 @@ class TimelineBodyComponent
           for str in strs
             if str.match(/https?:\/\/\S+/)
               m "a[href='#']", { onclick : _openExternal.bind this, str}, str
-            else if str.match(/^\#|^\s\#/)
+            else if str.match(/^\#\S+|^\s\#\S+/)
               m "a[href='#']", { onclick : _openExternal.bind this, str}, str
             else m "span", _htmlDecode(str)
       view : @_view
@@ -43,11 +43,11 @@ class TimelineBodyComponent
             m "i.fa.fa-reply"
             m "i.fa.fa-star", {
               class : if item.tweet().favorited then "on" else ""
-              onclick : @_args.createFavorite.bind this, item
+              onclick : @_args.onFavorite.bind this, item
             }
             m "i.fa.fa-retweet", {
               class : if item.tweet().retweeted then "on" else ""
-              onclick : @_args.createRetweet.bind this, item
+              onclick : @_args.onRetweet.bind this, item
             }
           ]
         ]

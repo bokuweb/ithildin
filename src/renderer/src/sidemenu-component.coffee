@@ -8,10 +8,11 @@ class SideMenuComponent
     @_menuListComponent = new Menulist()
 
     return {
+      controller : (args) ->
       view : @_view
     }
 
-  _view : =>
+  _view : (ctrl, args) =>
     m "header.demo-drawer-header", [
       m "img#logo", {src:"./img/ithildin-logo.png"}
       m "div#profile", [

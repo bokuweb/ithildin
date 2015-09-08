@@ -1,9 +1,9 @@
 m = require 'mithril'
 
 class SearchBoxComponent
-  constructor : (@_args) ->
+  constructor : (args) ->
     return {
-      controller : ->
+      controller : (args) ->
         return {
           _upgradeMdl : (el, isInit, ctx) =>
             componentHandler.upgradeDom() unless isInit
@@ -11,7 +11,7 @@ class SearchBoxComponent
       view : @_view
     }
 
-  _view : (ctrl) =>
+  _view : (ctrl, args) =>
     m "div#search-box", [
       m "div.mdl-textfield.mdl-js-textfield", {config : ctrl._upgradeMdl }, [
         m "label.mdl-button.mdl-js-button.mdl-button--icon[for=sample6]", [

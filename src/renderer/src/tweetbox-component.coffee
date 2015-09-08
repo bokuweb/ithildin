@@ -1,4 +1,5 @@
-m = require 'mithril'
+m         = require 'mithril'
+SearchBox = require './searchbox-component'
 
 class TweetBoxComponent
   constructor : (@_args) ->
@@ -11,9 +12,7 @@ class TweetBoxComponent
       view : @_view
     }
 
-  _view : (ctrl) =>
-    m "div.mdl-cell.mdl-cell--12-col", [
-      m "div.mdl-layout__drawer-button", [m "i.material-icons", "menu"]
+  _view : (ctrl)  =>
       m "div.mdl-cell.mdl-cell--12-col", [
         m "div.mdl-textfield.mdl-js-textfield", {config : ctrl._upgradeMdl }, [
           m "textarea.mdl-textfield__input[type='text'][rows=4]",
@@ -22,17 +21,16 @@ class TweetBoxComponent
           m "label.mdl-textfield__label", "What's happening?"
         ]
         m "div.mdl-grid.tweet-button-wrapper", [
-          m.component @_args.searchBox if @_args.searchBox?
+          m.component new SearchBox()
           m "span.tweet-length", 140 - @_args.tweetText().length
           m "button.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.mdl-button--accent.tweet-button", {
-             onclick : @_args.tweet
+             onclick : @_args.onTweet
             }, [
             m "i.fa.fa-twitter"
           ], "tweet"
 
         ]
       ]
-    ]
 
 module.exports = TweetBoxComponent
 

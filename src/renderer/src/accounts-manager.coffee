@@ -13,6 +13,6 @@ class AccountsManager
 
     PubSub.subscribe "accounts.account.onclick", (msg, _id) =>
       console.log _id
-      
+
 module.exports = AccountsManager
 

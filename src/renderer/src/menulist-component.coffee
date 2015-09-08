@@ -10,7 +10,7 @@ class MenuListComponent
   _view : (controller) =>
     m "nav.demo-navigation.mdl-navigation", [
       m "a.[href='#'].menu-link", {
-        class : if m.route() is "/" then "active" else ""
+        class : if m.route() is "/home" then "active" else ""
       }, [m "i.fa.fa-home"], "Home"
       m "a.[href='#/favorite'].menu-link", {
         class : if m.route() is "/favorite" then "active" else ""
