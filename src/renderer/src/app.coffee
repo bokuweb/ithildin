@@ -1,5 +1,7 @@
 m               = require 'mithril'
 jsonfile        = require 'jsonfile'
+PubSub          = require 'pubsub-js'
+Timeline        = require './js/timeline'
 HomeTimeline    = require './js/hometimeline-component'
 Search          = require './js/search-component'
 Favorite        = require './js/favorite-component'
@@ -8,25 +10,31 @@ Twitter         = require './js/twitter-client'
 AccountsManager = require './js/accounts-manager'
 
 
-class IthildinRendererMain
+class IthildinMain
   constructor : ->
     m.route.mode = "hash"
-    # FIXME
-    homeTimeline = new HomeTimeline()
-    search =  new Search()
-    favorite =  new Favorite()
+    @_activeId = m.prop 0
 
-    m.route document.getElementById("timeline"), "/", {
-      "/"         : homeTimeline
+    accounts = m.prop jsonfile.readFileSync 'accounts.json'
+    @_timeline = for account in accounts() then new Timeline(account)
+
+    # FIXME
+    homeTimeline = new HomeTimeline @_timeline, @_activeId
+    search       = new Search @_timeline, @_activeId
+    favorite     = new Favorite @_timeline, @_activeId
+
+    m.route document.getElementById("timeline"), "/home", {
+      "/home"     : homeTimeline
       "/favorite" : favorite
       "/search"   : search
     }
 
-    accounts = jsonfile.readFileSync 'accounts.json'
-
     m.mount document.getElementById("side-menu"), m.component new SideMenu
       account :
         accounts : accounts
-        activeId : 0
+        activeId : @_activeId
 
-new IthildinRendererMain()
+    PubSub.subscribe "accounts.onchange", (msg, id) =>
+      @_activeId id
+
+new IthildinMain()

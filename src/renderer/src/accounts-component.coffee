@@ -5,8 +5,8 @@ ipc    = require 'ipc'
 # FIXME : seperate
 class AccountsVieModel
   constructor : (args) ->
-    @activeId = m.prop args.activeId
-    @accounts = m.prop args.accounts
+    @activeId = args.activeId
+    @accounts = args.accounts
 
     PubSub.subscribe "accounts.addButton.onclick", =>
       ipc.send 'authenticate-request'
@@ -24,11 +24,11 @@ class AccountsComponent
     @_vm = new AccountsVieModel args
 
     return {
-      controller : =>
+      controller : (args) ->
       view : @_view
     }
 
-  _view : =>
+  _view : (ctrl, args) =>
     m "div.mdl-grid", [
       m "div.mdl-cell.mdl-cell--3-col", [
         m "img.avatar", {src : @_vm.accounts()[@_vm.activeId()].profile_image_url}
