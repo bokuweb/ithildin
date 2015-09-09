@@ -19,7 +19,7 @@ class SearchBoxComponent
           m "input#sample6.mdl-textfield__input[type=text]"
           m "label.mdl-textfield__label[for=sample6]", [
             m "i.fa.fa-search.search-icon"
-          ], "  Search Twitter"
+          ], "  #{args.placeholder}"
         ]
       ]
     ]
