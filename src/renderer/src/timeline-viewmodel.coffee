@@ -4,7 +4,10 @@ util          = require 'util'
 _             = require 'lodash'
 TwitterClient = require './twitter-client'
 
-HOME_REFRESH_PERIOD = 65000
+REFRESH_PERIOD =
+  home     : 65 * 1000
+  favorite : 100 * 1000
+  search   : 20 * 1000
 
 class TimelineItem
   constructor : (tweet) ->
@@ -14,19 +17,16 @@ class TimelineViewModel
   constructor : (account) ->
     @_client = new TwitterClient account.accessToken, account.accessTokenSecret
     @tweetText = m.prop ""
-    @items =
-      home     : m.prop []
-      favorite : m.prop []
-      search   : m.prop []
-
-    @timerId =
-      home     : null
-      favorite : null
-      search   : null
+    @searchText = m.prop ""
+    @items = {}
+    @timerId = {}
+    for channel in timelineChannels
+      @items[channel] = m.prop []
+      @timerId[channel] = null
 
     # TODO : refactor
-    @fetchHomeItems {count:200}
-    @fetchFavoriteItems {}
+    @fetchItems {count:200}, "home"
+    @fetchItems {count:200}, "favorite"
 
   _mergeItems : (items, tweets) ->
     ids = for item in items then item.tweet().id_str
@@ -35,46 +35,23 @@ class TimelineViewModel
       newItems.push new TimelineItem(tweet)
     newItems.concat items
 
-  # TODO : refactor
-  fetchHomeItems : (params) =>
-    #FIXME
-    clearTimeout @timerId.home if @timerId.home?
-    @timerId.home = setTimeout =>
-      @fetchHomeItems params
-    , HOME_REFRESH_PERIOD
+  _setRefleshTimer : (params, ch) =>
+    clearTimeout @timerId[ch] if @timerId[ch]?
+    @timerId[ch] = setTimeout =>
+      @fetchItems params, ch
+    , REFRESH_PERIOD[ch]
 
-    @_client.getHomeTimeline params
+  fetchItems : (params, ch) =>
+    @_setRefleshTimer params, ch
+    fetch = switch ch
+      when "home"     then @_client.getHomeTimeline
+      when "favorite" then @_client.getFavorites
+      when "search"   then @_client.searchTweet
+      else
+    fetch params
       .then (tweets) =>
         return unless tweets?
-        @items.home = m.prop @_mergeItems(@items.home(), tweets)
-        m.redraw()
-      .fail (error) =>
-
-  fetchFavoriteItems : (params) =>
-    #FIXME
-    clearTimeout @timerId.favorite if @timerId.favorite?
-    @timerId.favorite = setTimeout =>
-      @fetchHomeItems params
-    , HOME_REFRESH_PERIOD
-
-    @_client.getFavorites params
-      .then (tweets) =>
-        return unless tweets?
-        @items.favorite = m.prop @_mergeItems(@items.favorite(), tweets)
-        m.redraw()
-      .fail (error) =>
-
-  fetchSearchItems : (params) =>
-    #FIXME
-    clearTimeout @timerId.search if @timerId.search?
-    @timerId.search = setTimeout =>
-      @fetchSearchItems params
-    , HOME_REFRESH_PERIOD
-
-    @_client.searchTweet params
-      .then (tweets) =>
-        return unless tweets?
-        @items.search = m.prop @_mergeItems(@items.search(), tweets)
+        @items[ch] = m.prop @_mergeItems(@items[ch](), tweets)
         m.redraw()
       .fail (error) =>
 
@@ -83,9 +60,9 @@ class TimelineViewModel
       .then (tweet) =>
         return unless tweet?
         @items.home = m.prop @_mergeItems(@items.home(), tweets)
-        @tweetText ""
         m.redraw()
-      .fail (error) => @tweetText ""
+      .fail (error) =>
+      @tweetText ""
 
   onFavorite : (item) =>
     item.tweet().favorited = not item.tweet().favorited
@@ -108,6 +85,9 @@ class TimelineViewModel
       # TODO : get new item id retweeted and set arg desroy request
       console.log "destroy"
       #@_client.destroyTweet, {id: item.tweet().retweetedId}
+
+  onInputSearchText : (channel) =>
+    
 
 module.exports = TimelineViewModel
 

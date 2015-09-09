@@ -1,5 +1,4 @@
 m      = require 'mithril'
-PubSub = require 'pubsub-js'
 
 class MenuListComponent
   constructor : ->
@@ -7,7 +6,7 @@ class MenuListComponent
       view : @_view
     }
 
-  _view : (controller) =>
+  _view : (ctrl) =>
     m "nav.demo-navigation.mdl-navigation", [
       m "a.[href='#'].menu-link", {
         class : if m.route() is "/home" then "active" else ""

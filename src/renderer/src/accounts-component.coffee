@@ -2,53 +2,45 @@ m      = require 'mithril'
 PubSub = require 'pubsub-js'
 ipc    = require 'ipc'
 
-# FIXME : seperate
-class AccountsVieModel
-  constructor : (args) ->
-    @activeId = args.activeId
-    @accounts = args.accounts
-
-    PubSub.subscribe "accounts.addButton.onclick", =>
-      ipc.send 'authenticate-request'
-
-    ipc.on 'authenticate-request-reply', =>
-      console.log "reply"
-
-  accountOnclick : (_id) ->
-    @activeId _id
-    #FIXME : refactor
-    PubSub.publish "accounts.onchange", _id
-
 class AccountsComponent
-  constructor : (args) ->
-    @_vm = new AccountsVieModel args
-
+  constructor : ->
     return {
-      controller : (args) ->
+      controller : (accounts, id) ->
+        #PubSub.subscribe "accounts.addButton.onclick", =>
+        #  ipc.send 'authenticate-request'
+        #ipc.on 'authenticate-request-reply', =>
+        #  console.log "reply"
+
+        return {
+          accountOnclick : (_id) ->
+            id _id
+            #FIXME : refactor
+            #PubSub.publish "accounts.onchange", _id
+        }
       view : @_view
     }
 
-  _view : (ctrl, args) =>
+  _view : (ctrl, accounts, id) =>
     m "div.mdl-grid", [
       m "div.mdl-cell.mdl-cell--3-col", [
-        m "img.avatar", {src : @_vm.accounts()[@_vm.activeId()].profile_image_url}
+        m "img.avatar", {src : accounts()[id()].profile_image_url}
       ]
       m "div.mdl-cell.mdl-cell--9-col", [
-        m "span.profile-name", @_vm.accounts()[@_vm.activeId()].name
+        m "span.profile-name", accounts()[id()].name
         m "br"
-        m "span.profile-screen-name", @_vm.accounts()[@_vm.activeId()].screen_name
+        m "span.profile-screen-name", accounts()[id()].screen_name
       ]
       m "div.mdl-grid.accounts", [
-        @_vm.accounts().map (account) =>
-          unless  @_vm.accounts()[@_vm.activeId()].id is account.id
+        accounts().map (account) =>
+          unless  accounts()[id()]._id is account._id
             m "div.mdl-cell.mdl-cell--3-col", [
-              m "a[href='#']", {onclick : @_vm.accountOnclick.bind @_vm, account._id}, [
+              m "a[href='#']", {onclick : ctrl.accountOnclick.bind this, account._id}, [
                 m "img.avatar-mini", {src : account.profile_image_url}
               ]
             ]
         m "div.mdl-cell.mdl-cell--3-col", [
           m "i.fa.fa-plus-square.add-account", {
-            onclick : => PubSub.publish "accounts.addButton.onclick"
+            onclick : => ipc.send 'authenticate-request'
           }
         ]
       ]
