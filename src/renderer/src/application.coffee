@@ -14,10 +14,10 @@ class IthildinMain
   constructor : ->
     m.route.mode = "hash"
     accountId = m.prop 0
-    accounts = m.prop jsonfile.readFileSync 'accounts.json'
-    timelineViewModels = for account in accounts() then new TimelineViewModel(account)
+    @_accounts = m.prop jsonfile.readFileSync 'accounts.json'
+    @_timelineViewModels = for account in @_accounts() then new TimelineViewModel(account)
     timelineComponents = for channel in timelineChannels
-      m.component new TimelineComponent(), timelineViewModels, {
+      m.component new TimelineComponent(), @_timelineViewModels, {
         accountId : accountId
         channel   : channel
       }
@@ -33,5 +33,11 @@ class IthildinMain
 
     #PubSub.subscribe "accounts.onchange", (msg, id) =>
     #  accountId id
+
+    ipc.on 'authenticate-request-reply', => @_addAccount()
+
+  _addAccount : =>
+    @_accounts = m.prop jsonfile.readFileSync 'accounts.json'
+    @_timelineViewModels.push new TimelineViewModel(@_accounts.last())
 
 new IthildinMain()

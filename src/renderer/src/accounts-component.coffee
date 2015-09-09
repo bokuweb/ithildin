@@ -6,11 +6,10 @@ class AccountsComponent
   constructor : ->
     return {
       controller : (accounts, id) ->
-        PubSub.subscribe "accounts.addButton.onclick", =>
-          ipc.send 'authenticate-request'
-
-        ipc.on 'authenticate-request-reply', =>
-          console.log "reply"
+        #PubSub.subscribe "accounts.addButton.onclick", =>
+        #  ipc.send 'authenticate-request'
+        #ipc.on 'authenticate-request-reply', =>
+        #  console.log "reply"
 
         return {
           accountOnclick : (_id) ->
@@ -41,7 +40,7 @@ class AccountsComponent
             ]
         m "div.mdl-cell.mdl-cell--3-col", [
           m "i.fa.fa-plus-square.add-account", {
-            onclick : => PubSub.publish "accounts.addButton.onclick"
+            onclick : => ipc.send 'authenticate-request'
           }
         ]
       ]
