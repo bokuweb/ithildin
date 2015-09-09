@@ -1,10 +1,12 @@
 m         = require 'mithril'
+util      = require 'util'
 SearchBox = require './searchbox-component'
 
 class TweetBoxComponent
   constructor :  ->
     return {
       controller : (args) ->
+
         return {
           _upgradeMdl : (el, isInit, ctx) =>
             componentHandler.upgradeDom() unless isInit

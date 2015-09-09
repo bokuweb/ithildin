@@ -1,6 +1,8 @@
 m                 = require 'mithril'
 jsonfile          = require 'jsonfile'
-TimelineViewModel = require './js/timeline'
+ipc               = require 'ipc'
+TimelineViewModel = require './js/timeline-viewmodel'
+TimelineComponent = require './js/timeline-component'
 SideMenu          = require './js/sidemenu-component'
 
 global.timelineChannels = ["home", "favorite", "search"]
@@ -11,11 +13,13 @@ class IthildinMain
     accountId = m.prop 0
     @_accounts = m.prop jsonfile.readFileSync 'accounts.json'
     @_timelineViewModels = for account in @_accounts() then new TimelineViewModel(account)
-    timelineComponents = for channel in timelineChannels
-      m.component new TimelineComponent(), @_timelineViewModels, {
-        accountId : accountId
-        channel   : channel
-      }
+    timelineComponents = {}
+    for channel in timelineChannels
+      timelineComponents[channel] = 
+        m.component new TimelineComponent(), @_timelineViewModels, {
+          accountId : accountId
+          channel   : channel
+        }
 
     m.route document.getElementById("timeline"), "/home", {
       "/home"     : timelineComponents.home
@@ -23,11 +27,8 @@ class IthildinMain
       "/search"   : timelineComponents.search
     }
 
-    sidemenu = m.component new SideMenu(), accounts, accountId
+    sidemenu = m.component new SideMenu(), @_accounts, accountId
     m.mount document.getElementById("side-menu"), sidemenu
-
-    #PubSub.subscribe "accounts.onchange", (msg, id) =>
-    #  accountId id
 
     ipc.on 'authenticate-request-reply', => @_addAccount()
 

@@ -11,7 +11,7 @@ class TwitterClient
       access_token_key    : accessToken
       access_token_secret : accessTokenSecret
 
-  getHomeTimeline : (params) ->
+  getHomeTimeline : (params) =>
     d = Q.defer()
     @_client.get 'statuses/home_timeline', params, (error, tweets, response) =>
       if error
@@ -20,7 +20,7 @@ class TwitterClient
       d.resolve tweets
     d.promise
 
-  getFavorites : (params) ->
+  getFavorites : (params) =>
     d = Q.defer()
     @_client.get 'favorites/list', params, (error, tweets, response) =>
       if error

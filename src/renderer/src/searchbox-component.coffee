@@ -1,7 +1,7 @@
 m = require 'mithril'
 
 class SearchBoxComponent
-  constructor : (args) ->
+  constructor : ->
     return {
       controller : (args) ->
         return {
@@ -18,9 +18,7 @@ class SearchBoxComponent
         m "div.mdl-textfield", [
           m "input#sample6.mdl-textfield__input[type=text]",
             oninput : m.withAttr "value", args.searchText
-            value : =>
-              args.onInputSearchText args.channel()
-              args.searchText()
+            value :   args.searchText()
           m "label.mdl-textfield__label[for=sample6]", [
             m "i.fa.fa-search.search-icon"
           ], "  search"
