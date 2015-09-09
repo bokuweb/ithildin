@@ -17,6 +17,7 @@ class TimelineViewModel
   constructor : (account) ->
     @_client = new TwitterClient account.accessToken, account.accessTokenSecret
     @tweetText = m.prop ""
+    @searchText = m.prop ""
     @items = {}
     @timerId = {}
     for channel in timelineChannels
@@ -84,6 +85,9 @@ class TimelineViewModel
       # TODO : get new item id retweeted and set arg desroy request
       console.log "destroy"
       #@_client.destroyTweet, {id: item.tweet().retweetedId}
+
+  onInputSearchText : (channel) =>
+    
 
 module.exports = TimelineViewModel
 

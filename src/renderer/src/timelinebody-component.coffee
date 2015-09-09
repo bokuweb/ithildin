@@ -27,7 +27,8 @@ class TimelineBodyComponent
   _view : (ctrl, args) =>
     m "div.timeline-wrapper", [
       m "div.timeline", args.items().map (item) =>
-        m "div.mdl-grid.item.animated.fadeInUp", [
+        #m "div.mdl-grid.item.animated.fadeInUp", [
+        m "div.mdl-grid.item", [
           m "div.mdl-cell.mdl-cell--1-col", [
             m "img.avatar", {src:item.tweet().user.profile_image_url}
           ]

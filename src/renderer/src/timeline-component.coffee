@@ -13,15 +13,18 @@ class TimelineComponent
   _view : (ctrl, vm, params) =>
     m "div.mdl-grid",  [
       m.component new Tweetbox(), {
-        tweetText : vm[params.accountId()].tweetText
-        onTweet   : vm[params.accountId()].onTweet
-      }
+          searchText : vm[params.accountId()].searchText
+          tweetText  : vm[params.accountId()].tweetText
+          onTweet    : vm[params.accountId()].onTweet
+          onInputSearchText : vm[params.accountId()].onInputSearchText
+          channel : params.channel
+        }
 
       m.component new TimelineBody(), {
-        items      : vm[params.accountId()].items[params.channel()]
-        onFavorite : vm[params.accountId()].onFavorite
-        onRetweet  : vm[params.accountId()].onRetweet
-      }
+          items      : vm[params.accountId()].items[params.channel()]
+          onFavorite : vm[params.accountId()].onFavorite
+          onRetweet  : vm[params.accountId()].onRetweet
+        }
     ]
 
 module.exports = TimelineComponent

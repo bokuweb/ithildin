@@ -1,12 +1,7 @@
 m                 = require 'mithril'
 jsonfile          = require 'jsonfile'
-PubSub            = require 'pubsub-js'
 TimelineViewModel = require './js/timeline'
-TimelineComponent = require './js/timeline-component'
-Search            = require './js/search-component'
-Favorite          = require './js/favorite-component'
 SideMenu          = require './js/sidemenu-component'
-Twitter           = require './js/twitter-client'
 
 global.timelineChannels = ["home", "favorite", "search"]
 
