@@ -28,6 +28,7 @@
     "node-twitter-api": "~1.6.0",
     "pubsub-js": "^1.5.2",
     "q": "~1.4.1",
-    "twitter": "^1.2.5"
+    "twitter": "^1.2.5",
+    "velocity-animate": "^1.2.2"
   }
 }

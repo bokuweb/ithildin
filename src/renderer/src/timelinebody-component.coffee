@@ -1,6 +1,7 @@
-m      = require 'mithril'
-moment = require 'moment'
-Shell  = require 'shell'
+m        = require 'mithril'
+moment   = require 'moment'
+Shell    = require 'shell'
+velocity = require 'velocity-animate'
 
 class TimelineBodyComponent
   constructor : ->
@@ -21,6 +22,12 @@ class TimelineBodyComponent
             else if str.match(/^\#\S+|^\s\#\S+/)
               m "a[href='#']", { onclick : _openExternal.bind this, str}, str
             else m "span", _htmlDecode(str)
+
+        fadesIn : (element, isInitialized, context) =>
+          if not isInitialized
+            element.style.opacity = 0
+            Velocity element, {opacity: 1}
+
       view : @_view
     }
 
@@ -28,7 +35,7 @@ class TimelineBodyComponent
     m "div.timeline-wrapper", [
       m "div.timeline", args.items().map (item) =>
         #m "div.mdl-grid.item.animated.fadeInUp", [
-        m "div.mdl-grid.item", [
+        m "div.mdl-grid.item", {config: ctrl.fadesIn}, [
           m "div.mdl-cell.mdl-cell--1-col", [
             m "img.avatar", {src:item.tweet().user.profile_image_url}
           ]
