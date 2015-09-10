@@ -1,4 +1,5 @@
-m = require 'mithril'
+m      = require 'mithril'
+pubsub = require 'pubsub-js'
 
 class SearchBoxComponent
   constructor : ->
@@ -23,6 +24,9 @@ class SearchBoxComponent
             m "i.fa.fa-search.search-icon"
           ], "  search"
         ]
+        m "button.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.mdl-button--accent.search-button", {
+          onclick : => pubsub.publish 'searchButton:onClick', "hoge"
+        }, [m "i.fa.fa-search"]
       ]
     ]
 

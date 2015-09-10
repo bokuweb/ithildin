@@ -5,7 +5,7 @@ _             = require 'lodash'
 TwitterClient = require './twitter-client'
 
 REFRESH_PERIOD =
-  home     : 65 * 1000
+  home     : 80 * 1000
   favorite : 100 * 1000
   search   : 20 * 1000
 
@@ -25,7 +25,7 @@ class TimelineViewModel
       @timerId[channel] = null
 
     # TODO : refactor
-    @fetchItems {count:200}, "home"
+    @fetchItems {count:10}, "home"
     @fetchItems {count:200}, "favorite"
 
   _mergeItems : (items, tweets) ->
