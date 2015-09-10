@@ -1,7 +1,6 @@
 m                 = require 'mithril'
 jsonfile          = require 'jsonfile'
 ipc               = require 'ipc'
-pubsub            = require 'pubsub-js'
 TimelineViewModel = require './js/timeline-viewmodel'
 TimelineComponent = require './js/timeline-component'
 SideMenu          = require './js/sidemenu-component'
@@ -33,9 +32,6 @@ class IthildinMain
     m.mount document.getElementById("side-menu"), sidemenu
 
     ipc.on 'authenticate-request-reply', => @_addAccount()
-
-    pubsub.subscribe 'searchButton:onClick', (msg, val) =>
-      console.log "click search #{val}"
 
   _addAccount : =>
     @_accounts = m.prop jsonfile.readFileSync 'accounts.json'

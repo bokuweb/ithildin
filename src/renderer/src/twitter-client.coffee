@@ -30,7 +30,7 @@ class TwitterClient
     d.promise
 
 
-  getProfile : (params) ->
+  getProfile : (params) =>
     d = Q.defer()
     @_client.get 'account/verify_credentials', params, (error, account, response) =>
       if error
@@ -39,7 +39,7 @@ class TwitterClient
       d.resolve account
     d.promise
 
-  crateFavorite : (params) ->
+  crateFavorite : (params) =>
     d = Q.defer()
     @_client.post 'favorites/create', params, (error) =>
       if error
@@ -48,7 +48,7 @@ class TwitterClient
       d.resolve()
     d.promise
 
-  destroyFavorite : (params) ->
+  destroyFavorite : (params) =>
     d = Q.defer()
     @_client.post 'favorites/destroy', params, (error) =>
       if error
@@ -57,7 +57,7 @@ class TwitterClient
       d.resolve()
     d.promise
 
-  searchTweet  : (params) ->
+  searchTweet  : (params) =>
     d = Q.defer()
     @_client.get 'search/tweets', params, (error, tweets, response) =>
       if error
@@ -66,7 +66,7 @@ class TwitterClient
       d.resolve tweets.statuses
     d.promise
 
-  postTweet : (params) ->
+  postTweet : (params) =>
     d = Q.defer()
     @_client.post 'statuses/update', params, (error, tweet, response) =>
       if error
@@ -75,7 +75,7 @@ class TwitterClient
       d.resolve tweet
     d.promise
 
-  postRetweet : (params) ->
+  postRetweet : (params) =>
     d = Q.defer()
     @_client.post 'statuses/retweet', params, (error, tweet) =>
       if error
@@ -84,7 +84,7 @@ class TwitterClient
       d.resolve tweet
     d.promise
 
-  destroyTweet : (params) ->
+  destroyTweet : (params) =>
     d = Q.defer()
     @_client.post 'statuses/destroy', params, (error) =>
       if error

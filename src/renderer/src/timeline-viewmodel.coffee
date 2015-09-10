@@ -7,7 +7,7 @@ TwitterClient = require './twitter-client'
 REFRESH_PERIOD =
   home     : 80 * 1000
   favorite : 100 * 1000
-  search   : 20 * 1000
+  search   : 6 * 1000
 
 class TimelineItem
   constructor : (tweet) ->
@@ -19,14 +19,17 @@ class TimelineViewModel
     @tweetText = m.prop ""
     @searchText = m.prop ""
     @items = {}
-    @timerId = {}
+    @refreshTimerId = {}
     for channel in timelineChannels
       @items[channel] = m.prop []
-      @timerId[channel] = null
+      @refreshTimerId[channel] = null
 
     # TODO : refactor
-    @fetchItems {count:10}, "home"
+    @fetchItems {count:200}, "home"
     @fetchItems {count:200}, "favorite"
+
+  init : ->
+    @searchText = m.prop ""
 
   _mergeItems : (items, tweets) ->
     ids = for item in items then item.tweet().id_str
@@ -36,8 +39,8 @@ class TimelineViewModel
     newItems.concat items
 
   _setRefleshTimer : (params, ch) =>
-    clearTimeout @timerId[ch] if @timerId[ch]?
-    @timerId[ch] = setTimeout =>
+    clearTimeout @refreshTimerId[ch] if @refreshTimerId[ch]?
+    @refreshTimerId[ch] = setTimeout =>
       @fetchItems params, ch
     , REFRESH_PERIOD[ch]
 
@@ -86,8 +89,16 @@ class TimelineViewModel
       console.log "destroy"
       #@_client.destroyTweet, {id: item.tweet().retweetedId}
 
-  onInputSearchText : (channel) =>
-    
+
+  onInputSearchText : (value) =>
+    clearTimeout @searchOnInputTimerId if @searchOnInputTimerId?
+    @searchOnInputTimerId = setTimeout =>
+      switch m.route()
+        when "/search" then @fetchItems {count : 200, q : value}, "search"
+        else console.log "hoge"
+    , 1500
+
+    @searchText value
 
 module.exports = TimelineViewModel
 

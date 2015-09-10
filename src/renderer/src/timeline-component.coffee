@@ -8,6 +8,7 @@ class TimelineComponent
   constructor : ->
     return {
       controller : (vm, params) =>
+         vm[params.accountId()].init()
       view : @_view
     }
 
@@ -15,16 +16,15 @@ class TimelineComponent
     m "div.mdl-grid",  [
       m.component new Tweetbox(), {
           searchText : vm[params.accountId()].searchText
-          tweetText  : vm[params.accountId()].tweetText
-          onTweet    : vm[params.accountId()].onTweet
+          tweetText : vm[params.accountId()].tweetText
+          onTweet : vm[params.accountId()].onTweet
           onInputSearchText : vm[params.accountId()].onInputSearchText
-          channel : params.channel
         }
 
       m.component new TimelineBody(), {
-          items      : vm[params.accountId()].items[params.channel]
+          items : vm[params.accountId()].items[params.channel]
           onFavorite : vm[params.accountId()].onFavorite
-          onRetweet  : vm[params.accountId()].onRetweet
+          onRetweet : vm[params.accountId()].onRetweet
         }
     ]
 
