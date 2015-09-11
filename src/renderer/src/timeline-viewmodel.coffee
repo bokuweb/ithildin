@@ -17,19 +17,28 @@ class TimelineViewModel
   constructor : (account) ->
     @_client = new TwitterClient account.accessToken, account.accessTokenSecret
     @tweetText = m.prop ""
-    @searchText = m.prop ""
+    @searchBoxPlaceholder = {}
+    @searchTexts = {}
     @items = {}
     @refreshTimerId = {}
     for channel in timelineChannels
       @items[channel] = m.prop []
       @refreshTimerId[channel] = null
+      @searchTexts[channel] = m.prop ""
+      @_setPlaceholder channel
 
     # TODO : refactor
     @fetchItems {count:200}, "home"
     @fetchItems {count:200}, "favorite"
 
   init : ->
-    @searchText = m.prop ""
+
+  _setPlaceholder : (ch) =>
+    switch ch
+      when "home" then @searchBoxPlaceholder[ch] = m.prop "Search home timeline"
+      when "favorite" then @searchBoxPlaceholder[ch] = m.prop "Search favorites"
+      when "search" then @searchBoxPlaceholder[ch] = m.prop "Search Twitter"
+      else 
 
   _mergeItems : (items, tweets) ->
     ids = for item in items then item.tweet().id_str
@@ -81,24 +90,32 @@ class TimelineViewModel
     if item.tweet().retweeted
       @_client.postRetweet {id: item.tweet().id_str}
         .then (tweet) =>
-          # TODO : get new item id retweeted and set arg desroy request
+          # TODO : get new item id retweeted and set arg to desroy request
           console.log tweet.id_str
         .fail (error) =>
     else
-      # TODO : get new item id retweeted and set arg desroy request
+      # TODO : get new item id retweeted and set arg to desroy request
       console.log "destroy"
       #@_client.destroyTweet, {id: item.tweet().retweetedId}
 
 
   onInputSearchText : (value) =>
-    clearTimeout @searchOnInputTimerId if @searchOnInputTimerId?
-    @searchOnInputTimerId = setTimeout =>
-      switch m.route()
-        when "/search" then @fetchItems {count : 200, q : value}, "search"
-        else console.log "hoge"
-    , 1500
+    # FIXME : refactor
+    channel = m.route().replace("/", "")
 
-    @searchText value
+    fetch = (channel) =>
+      console.log channel
+      switch m.route()
+        when "/home"
+          console.log "home search"
+        when "/search"
+          @items[channel] = m.prop []
+          @fetchItems {count : 200, q : value}, "search"
+        else console.log "hoge"
+
+    clearTimeout @searchOnInputTimerId if @searchOnInputTimerId?
+    @searchOnInputTimerId = setTimeout fetch.bind(this, channel), 1500
+    @searchTexts[channel] = m.prop value
 
 module.exports = TimelineViewModel
 

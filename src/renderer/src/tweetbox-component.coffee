@@ -26,7 +26,7 @@ class TweetBoxComponent
           m.component new SearchBox(), {
               searchText : args.searchText
               onInputSearchText : args.onInputSearchText
-              channel : args.channel
+              searchBoxPlaceholder : args.searchBoxPlaceholder
             }
           m "span.tweet-length", 140 - args.tweetText().length
           m "button.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.mdl-button--accent.tweet-button", {

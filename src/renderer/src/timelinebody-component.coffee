@@ -15,7 +15,7 @@ class TimelineBodyComponent
           if e.childNodes.length is 0 then "" else e.childNodes[0].nodeValue
 
         decorateText : (text) =>
-          strs =  text.split /(https?:\/\/\S+|\s\#\S+)/
+          strs =  text.split /(https?:\/\/\S+|\s\#\S+\s)/
           for str in strs
             if str.match(/https?:\/\/\S+/)
               m "a[href='#']", { onclick : _openExternal.bind this, str}, str
@@ -24,7 +24,7 @@ class TimelineBodyComponent
             else m "span", _htmlDecode(str)
 
         fadesIn : (element, isInitialized, context) =>
-          if not isInitialized
+          unless isInitialized
             element.style.opacity = 0
             Velocity element, {opacity: 1}
 

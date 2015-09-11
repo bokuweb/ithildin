@@ -15,10 +15,11 @@ class TimelineComponent
   _view : (ctrl, vm, params) =>
     m "div.mdl-grid",  [
       m.component new Tweetbox(), {
-          searchText : vm[params.accountId()].searchText
+          searchText : vm[params.accountId()].searchTexts[params.channel]
           tweetText : vm[params.accountId()].tweetText
           onTweet : vm[params.accountId()].onTweet
           onInputSearchText : vm[params.accountId()].onInputSearchText
+          searchBoxPlaceholder : vm[params.accountId()].searchBoxPlaceholder[params.channel]
         }
 
       m.component new TimelineBody(), {

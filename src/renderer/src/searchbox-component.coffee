@@ -22,7 +22,7 @@ class SearchBoxComponent
             value :   args.searchText()
           m "label.mdl-textfield__label[for=sample6]", [
             m "i.fa.fa-search.search-icon"
-          ], "  search"
+          ], "  #{args.searchBoxPlaceholder()}"
         ]
         #m "button.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.mdl-button--accent.search-button", {
         #  onclick : args.onInputSearchText
