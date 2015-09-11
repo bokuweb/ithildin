@@ -11,7 +11,16 @@ REFRESH_PERIOD =
 
 class TimelineItem
   constructor : (tweet) ->
+    tweet.isVisible = true
     @tweet = m.prop tweet
+
+  @filter : (items, word) =>
+    r = new RegExp word, "i"
+    for item in items()
+      if item.tweet().text.match(r) then item.tweet().isVisible = true
+      else if item.tweet().user.name.match(r) then item.tweet().isVisible = true
+      else if item.tweet().user.screen_name.match(r) then item.tweet().isVisible = true
+      else item.tweet().isVisible  = false
 
 class TimelineViewModel
   constructor : (account) ->
@@ -28,8 +37,8 @@ class TimelineViewModel
       @_setPlaceholder channel
 
     # TODO : refactor
-    @fetchItems {count:200}, "home"
-    @fetchItems {count:200}, "favorite"
+    @fetchItems {count:10}, "home"
+    @fetchItems {count:10}, "favorite"
 
   init : ->
 
@@ -103,18 +112,18 @@ class TimelineViewModel
     # FIXME : refactor
     channel = m.route().replace("/", "")
 
-    fetch = (channel) =>
-      console.log channel
-      switch m.route()
-        when "/home"
-          console.log "home search"
-        when "/search"
+    search = (channel) =>
+      switch channel
+        when "home", "favorite"
+          TimelineItem.filter @items[channel], value
+          m.redraw()
+        when "search"
           @items[channel] = m.prop []
-          @fetchItems {count : 200, q : value}, "search"
+          @fetchItems {count : 10, q : value}, "search"
         else console.log "hoge"
 
     clearTimeout @searchOnInputTimerId if @searchOnInputTimerId?
-    @searchOnInputTimerId = setTimeout fetch.bind(this, channel), 1500
+    @searchOnInputTimerId = setTimeout search.bind(this, channel), 10
     @searchTexts[channel] = m.prop value
 
 module.exports = TimelineViewModel
