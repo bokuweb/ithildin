@@ -62,6 +62,9 @@ div.item
   margin 0 0 10px 0
   padding   0
 
+div.item-hidden
+  display none
+
 .mdl-textfield
   width 94%
   margin  5px 0 0 10px
@@ -89,10 +92,15 @@ div.tweet-button-wrapper
   left -8px
   width 320px
 
+.search-button
+  position absolute
+  left 300px
+  top 35px
+
 button.tweet-button 
   font-size 12px
   position absolute
-  top 10px
+  top 5px
   left calc(100% - 120px)
   margin  -5px 0 0 0px
 
@@ -101,7 +109,7 @@ span.tweet-length
   position absolute
   top 10px
   left 100%
-  margin  0 0 0 -175px
+  margin  0 0 0 -165px
 
 i.material-icons 
   margin  0 5px 0 0
@@ -124,6 +132,7 @@ span.profile-name
 .timeline-wrapper
   overflow-y auto
   height calc(100% - 100px)
+  width 100%
   max-height calc(100% - 100px)
   margin 40px 0 0 15px
   scrollbar-face-color #E74C3C
@@ -189,7 +198,7 @@ a.menu-link
   -o-transition  all 0.3s ease
   -ms-transition  all 0.3s ease
   transition  all 0.3s ease
-  line-height 56px
+  line-height 40px
   text-decoration none
   color #7F8C8D
   text-shadow  1px -1px 0 rgba(0,0,0,0.1)

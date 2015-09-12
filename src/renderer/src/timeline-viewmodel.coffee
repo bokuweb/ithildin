@@ -5,28 +5,49 @@ _             = require 'lodash'
 TwitterClient = require './twitter-client'
 
 REFRESH_PERIOD =
-  home     : 65 * 1000
+  home     : 80 * 1000
   favorite : 100 * 1000
-  search   : 20 * 1000
+  search   : 6 * 1000
 
 class TimelineItem
   constructor : (tweet) ->
+    tweet.isVisible = true
     @tweet = m.prop tweet
+
+  @filter : (items, word) =>
+    r = new RegExp word, "i"
+    for item in items()
+      if item.tweet().text.match(r) then item.tweet().isVisible = true
+      else if item.tweet().user.name.match(r) then item.tweet().isVisible = true
+      else if item.tweet().user.screen_name.match(r) then item.tweet().isVisible = true
+      else item.tweet().isVisible  = false
 
 class TimelineViewModel
   constructor : (account) ->
     @_client = new TwitterClient account.accessToken, account.accessTokenSecret
     @tweetText = m.prop ""
-    @searchText = m.prop ""
+    @searchBoxPlaceholder = {}
+    @searchTexts = {}
     @items = {}
-    @timerId = {}
+    @refreshTimerId = {}
     for channel in timelineChannels
       @items[channel] = m.prop []
-      @timerId[channel] = null
+      @refreshTimerId[channel] = null
+      @searchTexts[channel] = m.prop ""
+      @_setPlaceholder channel
 
     # TODO : refactor
-    @fetchItems {count:200}, "home"
-    @fetchItems {count:200}, "favorite"
+    @fetchItems {count:10}, "home"
+    @fetchItems {count:10}, "favorite"
+
+  init : ->
+
+  _setPlaceholder : (ch) =>
+    switch ch
+      when "home" then @searchBoxPlaceholder[ch] = m.prop "Search home timeline"
+      when "favorite" then @searchBoxPlaceholder[ch] = m.prop "Search favorites"
+      when "search" then @searchBoxPlaceholder[ch] = m.prop "Search Twitter"
+      else 
 
   _mergeItems : (items, tweets) ->
     ids = for item in items then item.tweet().id_str
@@ -36,8 +57,8 @@ class TimelineViewModel
     newItems.concat items
 
   _setRefleshTimer : (params, ch) =>
-    clearTimeout @timerId[ch] if @timerId[ch]?
-    @timerId[ch] = setTimeout =>
+    clearTimeout @refreshTimerId[ch] if @refreshTimerId[ch]?
+    @refreshTimerId[ch] = setTimeout =>
       @fetchItems params, ch
     , REFRESH_PERIOD[ch]
 
@@ -78,16 +99,33 @@ class TimelineViewModel
     if item.tweet().retweeted
       @_client.postRetweet {id: item.tweet().id_str}
         .then (tweet) =>
-          # TODO : get new item id retweeted and set arg desroy request
+          # TODO : get new item id retweeted and set arg to desroy request
           console.log tweet.id_str
         .fail (error) =>
     else
-      # TODO : get new item id retweeted and set arg desroy request
+      # TODO : get new item id retweeted and set arg to desroy request
       console.log "destroy"
       #@_client.destroyTweet, {id: item.tweet().retweetedId}
 
-  onInputSearchText : (channel) =>
-    
+
+  onInputSearchText : (value) =>
+    # FIXME : refactor
+    search = (channel) =>
+      @items[channel] = m.prop []
+      @fetchItems {count : 10, q : value}, "search"
+
+    channel = m.route().replace("/", "")
+    switch channel
+      when "home", "favorite"
+        TimelineItem.filter @items[channel], value
+        @searchTexts[channel] = m.prop value
+      when "search"
+        clearTimeout @searchOnInputTimerId if @searchOnInputTimerId?
+        @searchOnInputTimerId = setTimeout search.bind(this, channel), 1500
+        @searchTexts[channel] = m.prop value
+      else console.log "hoge"
+
+
 
 module.exports = TimelineViewModel
 

@@ -14,8 +14,9 @@ class IthildinMain
     @_accounts = m.prop jsonfile.readFileSync 'accounts.json'
     @_timelineViewModels = for account in @_accounts() then new TimelineViewModel(account)
     timelineComponents = {}
+
     for channel in timelineChannels
-      timelineComponents[channel] = 
+      timelineComponents[channel] =
         m.component new TimelineComponent(), @_timelineViewModels, {
           accountId : accountId
           channel   : channel
