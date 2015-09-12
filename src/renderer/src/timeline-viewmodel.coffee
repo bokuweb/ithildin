@@ -110,21 +110,22 @@ class TimelineViewModel
 
   onInputSearchText : (value) =>
     # FIXME : refactor
-    channel = m.route().replace("/", "")
-
     search = (channel) =>
-      switch channel
-        when "home", "favorite"
-          TimelineItem.filter @items[channel], value
-          m.redraw()
-        when "search"
-          @items[channel] = m.prop []
-          @fetchItems {count : 10, q : value}, "search"
-        else console.log "hoge"
+      @items[channel] = m.prop []
+      @fetchItems {count : 10, q : value}, "search"
 
-    clearTimeout @searchOnInputTimerId if @searchOnInputTimerId?
-    @searchOnInputTimerId = setTimeout search.bind(this, channel), 10
-    @searchTexts[channel] = m.prop value
+    channel = m.route().replace("/", "")
+    switch channel
+      when "home", "favorite"
+        TimelineItem.filter @items[channel], value
+        @searchTexts[channel] = m.prop value
+      when "search"
+        clearTimeout @searchOnInputTimerId if @searchOnInputTimerId?
+        @searchOnInputTimerId = setTimeout search.bind(this, channel), 1500
+        @searchTexts[channel] = m.prop value
+      else console.log "hoge"
+
+
 
 module.exports = TimelineViewModel
 
