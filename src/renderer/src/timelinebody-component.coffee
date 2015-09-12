@@ -15,7 +15,7 @@ class TimelineBodyComponent
           if e.childNodes.length is 0 then "" else e.childNodes[0].nodeValue
 
         decorateText : (text) =>
-          strs =  text.split /(https?:\/\/\S+|\s\#\S+\s)/
+          strs =  text.split /(https?:\/\/\S+|\s?\#\S+)/
           for str in strs
             if str.match(/https?:\/\/\S+/)
               m "a[href='#']", { onclick : _openExternal.bind this, str}, str

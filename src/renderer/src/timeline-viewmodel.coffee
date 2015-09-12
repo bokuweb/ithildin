@@ -37,8 +37,8 @@ class TimelineViewModel
       @_setPlaceholder channel
 
     # TODO : refactor
-    @fetchItems {count:10}, "home"
-    @fetchItems {count:10}, "favorite"
+    @fetchItems {count:200}, "home"
+    @fetchItems {count:200}, "favorite"
 
   init : ->
 
@@ -112,7 +112,7 @@ class TimelineViewModel
     # FIXME : refactor
     search = (channel) =>
       @items[channel] = m.prop []
-      @fetchItems {count : 10, q : value}, "search"
+      @fetchItems {count : 200, q : value}, "search"
 
     channel = m.route().replace("/", "")
     switch channel
