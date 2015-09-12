@@ -20,7 +20,8 @@ app.on 'ready', ->
     mainWindow.on 'closed', -> mainWindow = null
     mainWindow.loadUrl "file://#{require('path').resolve()}/src/renderer/index.html"
 
-  accountFile = 'accounts.json'
+  #accountFile = "#{app.getPath('cache')}/accounts.json"
+  accountFile = "accounts.json"
   accounts = []
   try
     accounts = jsonfile.readFileSync accountFile

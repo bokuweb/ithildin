@@ -31,10 +31,11 @@ class IthildinMain
     sidemenu = m.component new SideMenu(), @_accounts, accountId
     m.mount document.getElementById("side-menu"), sidemenu
 
-    ipc.on 'authenticate-request-reply', => @_addAccount()
+    ipc.on 'authenticate-request-reply', (accounts) =>
+      @_accounts accounts
+      @_addAccount accounts[accounts.length-1]
 
-  _addAccount : =>
-    @_accounts = m.prop jsonfile.readFileSync 'accounts.json'
-    @_timelineViewModels.push new TimelineViewModel(@_accounts.last())
+  _addAccount : (account) =>
+    @_timelineViewModels.push new TimelineViewModel(account)
 
 new IthildinMain()
