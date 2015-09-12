@@ -82,7 +82,7 @@ class TimelineViewModel
     @_client.postTweet {status: @tweetText()}
       .then (tweet) =>
         return unless tweet?
-        @items.home = m.prop @_mergeItems(@items.home(), tweets)
+        @items.home = m.prop @_mergeItems(@items.home(), tweet)
         m.redraw()
       .fail (error) =>
       @tweetText ""
