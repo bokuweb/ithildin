@@ -29,6 +29,14 @@ class TwitterClient
       d.resolve tweets
     d.promise
 
+  getStatus : (id) =>
+    d = Q.defer()
+    @_client.get 'statuses/show', {id : id, include_my_retweet : true}, (error, status, response) =>
+      if error
+        console.log util.inspect(error)
+        d.reject error
+      d.resolve status
+    d.promise
 
   getProfile : (params) =>
     d = Q.defer()
@@ -56,6 +64,16 @@ class TwitterClient
         d.reject error
       d.resolve()
     d.promise
+
+  searchTweet  : (params) =>
+    d = Q.defer()
+    @_client.get 'search/tweets', params, (error, tweets, response) =>
+      if error
+        console.log util.inspect(error)
+        d.reject error
+      d.resolve tweets.statuses
+    d.promise
+
 
   searchTweet  : (params) =>
     d = Q.defer()

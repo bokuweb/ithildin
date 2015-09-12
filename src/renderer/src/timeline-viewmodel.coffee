@@ -9,11 +9,13 @@ REFRESH_PERIOD =
   favorite : 100 * 1000
   search   : 6 * 1000
 
+# TODO : refactor
 class TimelineItem
   constructor : (tweet) ->
     tweet.isVisible = true
     @tweet = m.prop tweet
 
+  # TODO : refactor
   @filter : (items, word) =>
     r = new RegExp word, "i"
     for item in items()
@@ -99,13 +101,14 @@ class TimelineViewModel
     if item.tweet().retweeted
       @_client.postRetweet {id: item.tweet().id_str}
         .then (tweet) =>
-          # TODO : get new item id retweeted and set arg to desroy request
           console.log tweet.id_str
         .fail (error) =>
     else
-      # TODO : get new item id retweeted and set arg to desroy request
-      console.log "destroy"
-      #@_client.destroyTweet, {id: item.tweet().retweetedId}
+      @_client.getStatus item.tweet().id_str
+        .then (status) =>
+          destroyId = status.current_user_retweet.id_str
+          @_client.destroyTweet {id: destroyId}
+            .then => console.log "destroy!!"
 
 
   onInputSearchText : (value) =>
