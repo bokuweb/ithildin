@@ -10,15 +10,6 @@ This repository is heavily under development and unstable.
    
 ### Set your consumerkey & sectret
 
-Set your consumerkey & sectret to ```config/default.json```.
-
-``` json
-{
-      "consumerKey"    : "YOUR_CONSUMERKEY",
-      "consumerSecret" : "YOUR_CONSUMERSECRET"
-}
-```
-
 ### Install Node modules.
 
 ```
@@ -36,6 +27,12 @@ gulp build
 
 ```
 npm start
+```
+
+### Package app.
+
+```
+npm run package
 ```
 
 ## License

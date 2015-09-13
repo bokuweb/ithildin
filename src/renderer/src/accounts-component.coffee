@@ -1,5 +1,6 @@
 m      = require 'mithril'
 PubSub = require 'pubsub-js'
+util   = require 'util'
 ipc    = require 'ipc'
 
 class AccountsComponent

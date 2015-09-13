@@ -39,16 +39,16 @@ class TimelineViewModel
       @_setPlaceholder channel
 
     # TODO : refactor
-    @fetchItems {count:200}, "home"
-    @fetchItems {count:200}, "favorite"
+    @fetchItems {count:50}, "home"
+    @fetchItems {count:50}, "favorite"
 
   init : ->
 
   _setPlaceholder : (ch) =>
-    switch ch
-      when "home" then @searchBoxPlaceholder[ch] = m.prop "Search home timeline"
-      when "favorite" then @searchBoxPlaceholder[ch] = m.prop "Search favorites"
-      when "search" then @searchBoxPlaceholder[ch] = m.prop "Search Twitter"
+    @searchBoxPlaceholder[ch] = switch ch
+      when "home" then m.prop "Search home timeline"
+      when "favorite" then m.prop "Search favorites"
+      when "search" then m.prop "Search Twitter"
       else 
 
   _mergeItems : (items, tweets) ->
@@ -65,6 +65,7 @@ class TimelineViewModel
     , REFRESH_PERIOD[ch]
 
   fetchItems : (params, ch) =>
+    m.redraw()
     @_setRefleshTimer params, ch
     fetch = switch ch
       when "home"     then @_client.getHomeTimeline
@@ -73,8 +74,8 @@ class TimelineViewModel
       else
     fetch params
       .then (tweets) =>
-        return unless tweets?
-        @items[ch] = m.prop @_mergeItems(@items[ch](), tweets)
+        if tweets?
+          @items[ch] = m.prop @_mergeItems(@items[ch](), tweets)
         m.redraw()
       .fail (error) =>
 
@@ -111,13 +112,15 @@ class TimelineViewModel
             .then => console.log "destroy!!"
 
 
-  onInputSearchText : (value) =>
+  onInputSearchText : (channel, value) =>
     # FIXME : refactor
     search = (channel) =>
-      @items[channel] = m.prop []
-      @fetchItems {count : 200, q : value}, "search"
 
-    channel = m.route().replace("/", "")
+      @items[channel] = m.prop []
+      @fetchItems {count : 50, q : value}, "search"
+      m.redraw()
+
+    #channel = m.route().replace("/", "")
     switch channel
       when "home", "favorite"
         TimelineItem.filter @items[channel], value
@@ -127,8 +130,6 @@ class TimelineViewModel
         @searchOnInputTimerId = setTimeout search.bind(this, channel), 1500
         @searchTexts[channel] = m.prop value
       else console.log "hoge"
-
-
 
 module.exports = TimelineViewModel
 

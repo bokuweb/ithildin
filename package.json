@@ -4,18 +4,19 @@
   "description": "",
   "main": "src/browser/js/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager . ithildin --arch=x64 --out=packages/v0.1.0 --platform=darwin --version=0.32.2 --ignore={packages,screenshots}/* --overwrite"
   },
   "author": "Bokuweb",
   "license": "MIT",
   "devDependencies": {
-    "electron-prebuilt": "^0.31.1",
-    "electron-packager": "^5.0.2",
+    "coffeeify": "~1.1.0",
+    "electron-packager": "^5.1.0",
+    "electron-prebuilt": "^0.32.2",
     "gulp": "~3.9.0",
     "gulp-coffee": "~2.3.1",
     "gulp-plumber": "~1.0.1",
-    "gulp-stylus": "~2.0.6",
-    "coffeeify": "~1.1.0"
+    "gulp-stylus": "~2.0.6"
   },
   "dependencies": {
     "coffee-script": "^1.9.3",

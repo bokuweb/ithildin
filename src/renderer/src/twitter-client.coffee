@@ -1,13 +1,14 @@
 Q       = require 'q'
 Twitter = require 'twitter'
 util    = require 'util'
-config  = require 'config'
+#config  = require 'config'
+remote  = require 'remote'
 
 class TwitterClient
   constructor : (accessToken, accessTokenSecret) ->
     @_client = new Twitter
-      consumer_key        : config.consumerKey
-      consumer_secret     : config.consumerSecret
+      consumer_key        : remote.getGlobal('consumerKey')
+      consumer_secret     : remote.getGlobal('consumerSecret')
       access_token_key    : accessToken
       access_token_secret : accessTokenSecret
 

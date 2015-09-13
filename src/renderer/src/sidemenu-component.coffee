@@ -4,6 +4,7 @@ Accounts   = require './accounts-component'
 
 class SideMenuComponent
   constructor : ->
+    @_menu = new Menulist()
     return {
       controller : (accounts, id) ->
       view : @_view
@@ -16,7 +17,7 @@ class SideMenuComponent
         m.component new Accounts(), accounts, id
       ]
       m "div#menu", [
-        m.component new Menulist()
+        m.component @_menu
       ]
     ]
 
