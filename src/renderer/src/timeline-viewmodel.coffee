@@ -1,5 +1,5 @@
 m             = require 'mithril'
-config        = require 'config'
+#config        = require 'config'
 util          = require 'util'
 _             = require 'lodash'
 TwitterClient = require './twitter-client'
@@ -22,7 +22,7 @@ class TimelineItem
       if item.tweet().text.match(r) then item.tweet().isVisible = true
       else if item.tweet().user.name.match(r) then item.tweet().isVisible = true
       else if item.tweet().user.screen_name.match(r) then item.tweet().isVisible = true
-      else item.tweet().isVisible  = false
+      else item.tweet().isVisible = false
 
 class TimelineViewModel
   constructor : (account) ->
@@ -115,10 +115,8 @@ class TimelineViewModel
   onInputSearchText : (channel, value) =>
     # FIXME : refactor
     search = (channel) =>
-
       @items[channel] = m.prop []
       @fetchItems {count : 50, q : value}, "search"
-      m.redraw()
 
     #channel = m.route().replace("/", "")
     switch channel
