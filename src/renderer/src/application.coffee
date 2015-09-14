@@ -28,7 +28,7 @@ class IthildinMain
       "/favorite" : timelineComponents.favorite
       "/search"   : timelineComponents.search
     }
-
+ 
     sidemenu = m.component new SideMenu(), @_accounts, accountId
     m.mount document.getElementById("side-menu"), sidemenu
 
@@ -38,6 +38,8 @@ class IthildinMain
 
   _addAccount : (account) =>
     @_timelineViewModels.push new TimelineViewModel(account)
-    m.redraw()
 
-new IthildinMain()
+    m.redraw()
+    
+window.onload = () =>
+  global.app = new IthildinMain()
