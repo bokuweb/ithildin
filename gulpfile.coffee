@@ -15,6 +15,12 @@ gulp.task 'build:browser', ->
     .pipe coffee()
     .pipe gulp.dest './src/browser/js/'
 
+gulp.task 'build:test', ->
+  gulp.src './test/src/*.coffee'
+    .pipe plumber()
+    .pipe coffee()
+    .pipe gulp.dest './test'
+
 gulp.task 'build:stylus', ->
   gulp.src './src/renderer/styl/*.styl'
     .pipe plumber()
@@ -22,11 +28,11 @@ gulp.task 'build:stylus', ->
       compress: true
     .pipe gulp.dest './src/renderer/stylesheets'
 
-gulp.task 'build:coffee', ['build:renderer', 'build:browser']
+gulp.task 'build:coffee', ['build:renderer', 'build:browser', 'build:test']
 
 gulp.task 'build', ['build:coffee', 'build:stylus']
 
 gulp.task 'watch', ->
   gulp.watch ['./src/renderer/styl/*.styl'], ['build:stylus']
   gulp.watch ['./src/*/src/*.coffee'], ['build:coffee']
-
+  gulp.watch ['./test/src/*.coffee'], ['build:test']
