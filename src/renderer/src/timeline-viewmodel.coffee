@@ -1,5 +1,5 @@
 m             = require 'mithril'
-config        = require 'config'
+#config        = require 'config'
 util          = require 'util'
 _             = require 'lodash'
 TwitterClient = require './twitter-client'
@@ -9,18 +9,20 @@ REFRESH_PERIOD =
   favorite : 100 * 1000
   search   : 6 * 1000
 
+# TODO : refactor
 class TimelineItem
   constructor : (tweet) ->
     tweet.isVisible = true
     @tweet = m.prop tweet
 
+  # TODO : refactor
   @filter : (items, word) =>
     r = new RegExp word, "i"
     for item in items()
       if item.tweet().text.match(r) then item.tweet().isVisible = true
       else if item.tweet().user.name.match(r) then item.tweet().isVisible = true
       else if item.tweet().user.screen_name.match(r) then item.tweet().isVisible = true
-      else item.tweet().isVisible  = false
+      else item.tweet().isVisible = false
 
 class TimelineViewModel
   constructor : (account) ->
@@ -37,16 +39,16 @@ class TimelineViewModel
       @_setPlaceholder channel
 
     # TODO : refactor
-    @fetchItems {count:10}, "home"
-    @fetchItems {count:10}, "favorite"
+    @fetchItems {count:50}, "home"
+    @fetchItems {count:50}, "favorite"
 
   init : ->
 
   _setPlaceholder : (ch) =>
-    switch ch
-      when "home" then @searchBoxPlaceholder[ch] = m.prop "Search home timeline"
-      when "favorite" then @searchBoxPlaceholder[ch] = m.prop "Search favorites"
-      when "search" then @searchBoxPlaceholder[ch] = m.prop "Search Twitter"
+    @searchBoxPlaceholder[ch] = switch ch
+      when "home" then m.prop "Search home timeline"
+      when "favorite" then m.prop "Search favorites"
+      when "search" then m.prop "Search Twitter"
       else 
 
   _mergeItems : (items, tweets) ->
@@ -71,8 +73,9 @@ class TimelineViewModel
       else
     fetch params
       .then (tweets) =>
-        return unless tweets?
-        @items[ch] = m.prop @_mergeItems(@items[ch](), tweets)
+        console.dir tweets
+        if tweets?
+          @items[ch] = m.prop @_mergeItems(@items[ch](), tweets)
         m.redraw()
       .fail (error) =>
 
@@ -80,7 +83,7 @@ class TimelineViewModel
     @_client.postTweet {status: @tweetText()}
       .then (tweet) =>
         return unless tweet?
-        @items.home = m.prop @_mergeItems(@items.home(), tweets)
+        @items.home = m.prop @_mergeItems(@items.home(), tweet)
         m.redraw()
       .fail (error) =>
       @tweetText ""
@@ -99,22 +102,23 @@ class TimelineViewModel
     if item.tweet().retweeted
       @_client.postRetweet {id: item.tweet().id_str}
         .then (tweet) =>
-          # TODO : get new item id retweeted and set arg to desroy request
           console.log tweet.id_str
         .fail (error) =>
     else
-      # TODO : get new item id retweeted and set arg to desroy request
-      console.log "destroy"
-      #@_client.destroyTweet, {id: item.tweet().retweetedId}
+      @_client.getStatus item.tweet().id_str
+        .then (status) =>
+          destroyId = status.current_user_retweet.id_str
+          @_client.destroyTweet {id: destroyId}
+            .then => console.log "destroy!!"
 
 
-  onInputSearchText : (value) =>
+  onInputSearchText : (channel, value) =>
     # FIXME : refactor
     search = (channel) =>
       @items[channel] = m.prop []
-      @fetchItems {count : 10, q : value}, "search"
+      @fetchItems {count : 50, q : value}, "search"
 
-    channel = m.route().replace("/", "")
+    #channel = m.route().replace("/", "")
     switch channel
       when "home", "favorite"
         TimelineItem.filter @items[channel], value
@@ -124,8 +128,6 @@ class TimelineViewModel
         @searchOnInputTimerId = setTimeout search.bind(this, channel), 1500
         @searchTexts[channel] = m.prop value
       else console.log "hoge"
-
-
 
 module.exports = TimelineViewModel
 

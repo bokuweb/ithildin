@@ -20,6 +20,7 @@ class TimelineComponent
           onTweet : vm[params.accountId()].onTweet
           onInputSearchText : vm[params.accountId()].onInputSearchText
           searchBoxPlaceholder : vm[params.accountId()].searchBoxPlaceholder[params.channel]
+          channel : params.channel
         }
 
       m.component new TimelineBody(), {

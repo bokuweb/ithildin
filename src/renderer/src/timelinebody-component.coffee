@@ -14,8 +14,9 @@ class TimelineBodyComponent
           e.innerHTML = text
           if e.childNodes.length is 0 then "" else e.childNodes[0].nodeValue
 
+        # TODO : move to item model
         decorateText : (text) =>
-          strs =  text.split /(https?:\/\/\S+|\s\#\S+\s)/
+          strs =  text.split /(https?:\/\/\S+|\s?\#\S+)/
           for str in strs
             if str.match(/https?:\/\/\S+/)
               m "a[href='#']", { onclick : _openExternal.bind this, str}, str
@@ -35,7 +36,7 @@ class TimelineBodyComponent
     m "div.timeline-wrapper", [
       m "div.timeline", args.items().map (item) =>
         m "div.mdl-grid.item", {
-            config: ctrl.fadesIn
+            #config: ctrl.fadesIn
             class : unless item.tweet().isVisible then "item-hidden"
           }, [
           m "div.mdl-cell.mdl-cell--1-col", [
@@ -44,6 +45,7 @@ class TimelineBodyComponent
           m "div.mdl-cell.mdl-cell--10-col.tweet-body", [
             m "span.name", item.tweet().user.name
             m "span.screen-name", "@#{item.tweet().user.screen_name}"
+            # FIXME : 
             m "span.time", moment(new Date(item.tweet().created_at)).format('lll')
             m "p.text", ctrl.decorateText item.tweet().text
             if item.tweet().entities?.media?

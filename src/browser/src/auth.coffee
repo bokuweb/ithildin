@@ -1,18 +1,19 @@
 BrowserWindow = require 'browser-window'
 TwitterApi    = require 'node-twitter-api'
-config        = require 'config'
+#jsonfile      = require 'jsonfile'
+#config        = require 'config'
 Q             = require 'q'
 util          = require 'util'
-
 
 loginWindow = null
 
 class Auth
   constructor : ->
+    #config = jsonfile.readFileSync "file://#{__dirname}/config.json"
     @twitter = new TwitterApi
       callback       : 'http://example.com'
-      consumerKey    : config.consumerKey
-      consumerSecret : config.consumerSecret
+      consumerKey    : consumerKey
+      consumerSecret : consumerSecret
 
   request : ->
     d = Q.defer()
@@ -39,7 +40,7 @@ class Auth
                   setTimeout ->
                     loginWindow.close()
                     loginWindow = null
-                  , 0
+                  , 100
                   profile.accessToken = accessToken
                   profile.accessTokenSecret = accessTokenSecret
                   d.resolve profile

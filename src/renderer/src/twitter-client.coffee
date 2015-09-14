@@ -1,13 +1,14 @@
 Q       = require 'q'
 Twitter = require 'twitter'
 util    = require 'util'
-config  = require 'config'
+#config  = require 'config'
+remote  = require 'remote'
 
 class TwitterClient
   constructor : (accessToken, accessTokenSecret) ->
     @_client = new Twitter
-      consumer_key        : config.consumerKey
-      consumer_secret     : config.consumerSecret
+      consumer_key        : remote.getGlobal('consumerKey')
+      consumer_secret     : remote.getGlobal('consumerSecret')
       access_token_key    : accessToken
       access_token_secret : accessTokenSecret
 
@@ -29,6 +30,14 @@ class TwitterClient
       d.resolve tweets
     d.promise
 
+  getStatus : (id) =>
+    d = Q.defer()
+    @_client.get 'statuses/show', {id : id, include_my_retweet : true}, (error, status, response) =>
+      if error
+        console.log util.inspect(error)
+        d.reject error
+      d.resolve status
+    d.promise
 
   getProfile : (params) =>
     d = Q.defer()
@@ -56,6 +65,16 @@ class TwitterClient
         d.reject error
       d.resolve()
     d.promise
+
+  searchTweet  : (params) =>
+    d = Q.defer()
+    @_client.get 'search/tweets', params, (error, tweets, response) =>
+      if error
+        console.log util.inspect(error)
+        d.reject error
+      d.resolve tweets.statuses
+    d.promise
+
 
   searchTweet  : (params) =>
     d = Q.defer()

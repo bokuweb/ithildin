@@ -11,33 +11,38 @@ mainWindow = null
 app.on 'window-all-closed', -> app.quit()
 
 app.on 'ready', ->
+  global.consumerKey = "njiDlWzzRl1ReomcCmvhbarN7"
+  global.consumerSecret = "rTOSMuY11adXXUxHHTlcNRWRZsutORnvgAl9eojb19Y77Ub78M"
+  global.accountFilePath = "#{app.getPath('cache')}/accounts.json"
+
   loadMainWindow = ->
     mainWindow = new BrowserWindow 
       width: 1200
       height: 800
-      'min-width': 840
+      #'min-width': 840
 
     mainWindow.on 'closed', -> mainWindow = null
-    mainWindow.loadUrl "file://#{require('path').resolve()}/src/renderer/index.html"
-
-  accountFile = 'accounts.json'
+    #mainWindow.openDevTools()
+    mainWindow.loadUrl "file://#{__dirname}/../../renderer/index.html"
+  #accountFilePath = "accounts.json"
   accounts = []
   try
-    accounts = jsonfile.readFileSync accountFile
+    accounts = jsonfile.readFileSync accountFilePath
 
   authenticate = ->
     d = Q.defer()
     auth = new Auth()
     auth.request()
       .then d.resolve
-      .fail (error) -> authenticate()
+      .fail (error) ->
+        console.log util.inspect(error)
     d.promise
 
   ipc.on 'authenticate-request', (event, arg) =>
     authenticate().then (account) ->
       account._id = accounts.length
       accounts.push account unless  _.includes(_.map(accounts, 'id'), account.id) 
-      jsonfile.writeFile accountFile, accounts,  (err) ->
+      jsonfile.writeFile accountFilePath, accounts,  (err) ->
         event.sender.send 'authenticate-request-reply', accounts
 
   if accounts[0]?.accessToken? and accounts[0]?.accessTokenSecret?
@@ -45,8 +50,9 @@ app.on 'ready', ->
   else
     authenticate().then (account) ->
       account._id = accounts.length 
-      accounts.push account unless  _.includes(_.map(accounts, 'id'), account.id) 
-      jsonfile.writeFile accountFile, accounts,  (err) -> loadMainWindow()
+      accounts.push account unless  _.includes(_.map(accounts, 'id'), account.id)
+      jsonfile.writeFile accountFilePath, accounts,  (err) ->
+        loadMainWindow()
 
 
 
