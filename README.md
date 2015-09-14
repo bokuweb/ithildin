@@ -4,7 +4,7 @@ Twitter Client built on Electron.
 This repository is heavily under development and unstable.   
    
    
-![](/screenshot/screenshot.gif)
+![](/screenshot/screenshot.png)
 
 ## Development
    

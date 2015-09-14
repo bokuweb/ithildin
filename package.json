@@ -1,12 +1,12 @@
 {
   "name": "ithildin",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "",
   "main": "src/browser/js/main.js",
   "scripts": {
     "start": "electron .",
     "test": "mocha --require intelli-espower-loader",
-    "package": "electron-packager . ithildin --arch=x64 --out=packages/v0.1.0 --platform=darwin --version=0.32.2 --ignore={packages,screenshots}/* --overwrite"
+    "package": "electron-packager . ithildin --arch=x64 --out=packages/v0.0.1 --platform=darwin --version=0.32.2 --ignore={packages,screenshots}/* --overwrite"
   },
   "directories": {
     "test": "test"

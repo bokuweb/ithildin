@@ -19,11 +19,11 @@ app.on 'ready', ->
     mainWindow = new BrowserWindow 
       width: 1200
       height: 800
-      'min-width': 840
+      #'min-width': 840
 
     mainWindow.on 'closed', -> mainWindow = null
+    #mainWindow.openDevTools()
     mainWindow.loadUrl "file://#{__dirname}/../../renderer/index.html"
-
   #accountFilePath = "accounts.json"
   accounts = []
   try

@@ -65,7 +65,6 @@ class TimelineViewModel
     , REFRESH_PERIOD[ch]
 
   fetchItems : (params, ch) =>
-    m.redraw()
     @_setRefleshTimer params, ch
     fetch = switch ch
       when "home"     then @_client.getHomeTimeline
@@ -74,6 +73,7 @@ class TimelineViewModel
       else
     fetch params
       .then (tweets) =>
+        console.dir tweets
         if tweets?
           @items[ch] = m.prop @_mergeItems(@items[ch](), tweets)
         m.redraw()
