@@ -1,8 +1,10 @@
 # ![](/src/renderer/img/ithildin-logo.png)
+
+![](https://travis-ci.org/bokuweb/ithildin.svg?branch=master)
    
 Twitter Client built on Electron.   
 This repository is heavily under development and unstable.   
-   
+
    
 ![](/screenshot/screenshot.png)
 
