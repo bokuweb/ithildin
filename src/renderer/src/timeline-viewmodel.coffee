@@ -42,6 +42,7 @@ class TimelineViewModel
     @fetchItems {count:50}, "home"
     @fetchItems {count:50}, "favorite"
 
+
   init : ->
 
   _setPlaceholder : (ch) =>
@@ -73,10 +74,10 @@ class TimelineViewModel
       else
     fetch params
       .then (tweets) =>
-        console.dir tweets
+        #console.dir tweets
         if tweets?
           @items[ch] = m.prop @_mergeItems(@items[ch](), tweets)
-        m.redraw()
+        m.redraw true
       .fail (error) =>
 
   onTweet : =>
