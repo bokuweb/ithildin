@@ -12,11 +12,13 @@ class SideMenuComponent
 
   _view : (ctrl, accounts, id) =>
     m "header.demo-drawer-header", [
-      m "img#logo", {src:"./img/ithildin-logo.png"}
-      m "div#profile", [
+      m "div.logo", [
+        m "img", {src:"./img/ithildin-logo.png"}
+      ]
+      m "div.profile", [
         m.component new Accounts(), accounts, id
       ]
-      m "div#menu", [
+      m "div.menu", [
         m.component @_menu
       ]
     ]

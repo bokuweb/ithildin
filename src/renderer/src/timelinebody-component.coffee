@@ -34,33 +34,37 @@ class TimelineBodyComponent
 
   _view : (ctrl, args) =>
     m "div.timeline-wrapper", [
-      m "div.timeline", args.items().map (item) =>
+      m "div.timeline-body", args.items().map (item) =>
         m "div.mdl-grid.item", {
             #config: ctrl.fadesIn
             class : unless item.tweet().isVisible then "item-hidden"
           }, [
-          m "div.mdl-cell.mdl-cell--1-col", [
+          m "div.mdl-cell.mdl-cell--1-col.tweet-avatar", [
             m "img.avatar", {src:item.tweet().user.profile_image_url}
           ]
-          m "div.mdl-cell.mdl-cell--10-col.tweet-body", [
-            m "span.name", item.tweet().user.name
-            m "span.screen-name", "@#{item.tweet().user.screen_name}"
-            # FIXME : 
-            m "span.time", moment(new Date(item.tweet().created_at)).format('lll')
-            m "p.text", ctrl.decorateText item.tweet().text
+          m "div.mdl-cell.mdl-cell--7-col.tweet-body", [
+            m "div.tweet-profile", [
+              m "span.name", item.tweet().user.name
+              m "span.screen-name", "@#{item.tweet().user.screen_name}"
+              # FIXME : 
+              m "span.time", moment(new Date(item.tweet().created_at)).format('lll')
+            ]
+            m "p.tweet-text", ctrl.decorateText item.tweet().text
             if item.tweet().entities?.media?
               m "div.image-wraper", [
                 m "img.media", {src:item.tweet().entities.media[0].media_url}
               ]
-            m "i.fa.fa-reply"
-            m "i.fa.fa-star", {
-              class : if item.tweet().favorited then "on" else ""
-              onclick : args.onFavorite.bind this, item
-            }
-            m "i.fa.fa-retweet", {
-              class : if item.tweet().retweeted then "on" else ""
-              onclick : args.onRetweet.bind this, item
-            }
+            m "div.tweet-action", [
+              m "i.fa.fa-reply"
+              m "i.fa.fa-star", {
+                class : if item.tweet().favorited then "on" else ""
+                onclick : args.onFavorite.bind this, item
+              }
+              m "i.fa.fa-retweet", {
+                class : if item.tweet().retweeted then "on" else ""
+                onclick : args.onRetweet.bind this, item
+              }
+            ]
           ]
         ]
     ]
