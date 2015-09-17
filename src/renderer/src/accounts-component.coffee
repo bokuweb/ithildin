@@ -22,25 +22,26 @@ class AccountsComponent
     }
 
   _view : (ctrl, accounts, id) =>
-    m "div.mdl-grid", [
-      m "div.mdl-cell.mdl-cell--3-col", [
-        m "img.avatar", {src : accounts()[id()].profile_image_url}
+    m "div.profile-inner", [
+      m "div.current", [
+        m "div.avatar", [
+          m "img", {src : accounts()[id()].profile_image_url}
+        ]
+        m "div.avatar-info", [
+          m "p.avatar-name", accounts()[id()].name
+          m "p.avatar-name-screen", accounts()[id()].screen_name
+        ]
       ]
-      m "div.mdl-cell.mdl-cell--9-col", [
-        m "span.profile-name", accounts()[id()].name
-        m "br"
-        m "span.profile-screen-name", accounts()[id()].screen_name
-      ]
-      m "div.mdl-grid.accounts", [
+      m "div.accounts", [
         accounts().map (account) =>
           unless  accounts()[id()]._id is account._id
-            m "div.mdl-cell.mdl-cell--3-col", [
+            m "div.avatar-min", [
               m "a[href='#']", {onclick : ctrl.accountOnclick.bind this, account._id}, [
-                m "img.avatar-mini", {src : account.profile_image_url}
+                m "img", {src : account.profile_image_url}
               ]
             ]
-        m "div.mdl-cell.mdl-cell--3-col", [
-          m "i.fa.fa-plus-square.add-account", {
+        m "div.add-account", [
+          m "i.fa.fa-plus-square", {
             onclick : => ipc.send 'authenticate-request'
           }
         ]
